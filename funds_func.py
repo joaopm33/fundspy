@@ -17,7 +17,6 @@ import os, os.path
 import zipfile
 import datetime
 import calendar
-from dateutil.relativedelta import *
 import sqlite3
 
 #packages used to download data from the internet
@@ -31,6 +30,7 @@ import numpy as np
 #other packages
 from tqdm import tqdm
 from workalendar.america import Brazil
+from dateutil.relativedelta import *
 
 def cvm_informes (year: int, mth: int) -> pd.DataFrame:
     """Downloads the daily report (informe diario) from CVM for a given month and year. 
