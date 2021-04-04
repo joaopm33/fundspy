@@ -1,0 +1,7 @@
+.ipynb_checkpoints
+__pycache__
+.jovianrc
+investments_database.db
+start_funds_database.ipynb
+update_funds_database.ipynb
+teste.ipynb
