@@ -93,7 +93,18 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             print(E)           
 
 
-def start_db(db_dir: str = r'investments_database.db'):
+def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, target_funds: list = []):
+    """Starts a SQLite database with 3 tables: daily_quotas (funds data), ibov_returns (ibovespa index data) and selic_rates (the base interest rate for the brazilian economy) 
+
+    Parameters:
+    db_dir (str): The path of the dabatabse file to be created. Defaults to 'investments_database.db', creating the file in the current working directory
+    start_year (int): Opitional (Defaults to 2005). Starting year for the data collection. . Can be use to reduce the size of the database 
+    target_funds (list): Opitional (Defaults to []). List of target funds CNPJs. Only funds with CNPJs contained in this list will be included in the database. Can be used to radically reduce the size of the database. If none is specified, all funds will be included
+
+    Returns:
+    Theres no return from the function
+
+   """
     ##STEP 1:
     #starts the new database
     con = sqlite3.connect(db_dir)
@@ -103,23 +114,27 @@ def start_db(db_dir: str = r'investments_database.db'):
     #downloads each report in the cvm website and pushes it to the sql database daily_quotas table
     
     #for each year between 2017 and now
-    for year in tqdm(range(2005, datetime.date.today().year + 1), position = 0, leave=True): 
+    for year in tqdm(range(start_year, datetime.date.today().year + 1), position = 0, leave=True): 
         for mth in range(1, 13): #for each month
-
             #loop structure for years equal or after 2017
             if year>=2017: 
                 informe = cvm_informes(str(year), mth)
-                #informe = informe[informe.CNPJ_FUNDO.isin(fundos.CNPJ_FUNDO)]
+
+                if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                    informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                 try:
                     #appends information to the sql database
                     informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
                 except:
                     pass
             
-            else: #loop structure to handle years before 2017 (they have a different file structure)
+            elif year<2017: #loop structure to handle years before 2017 (they have a different file structure)
                 #only executes the download function once every year to avoid duplicates (unique file for each year)       
                 if mth == 12:
                     informe = cvm_informes(str(year), mth)
+
+                    if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                        informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                     try:
                         #appends information to the sql database
                         informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
@@ -178,6 +193,8 @@ def start_db(db_dir: str = r'investments_database.db'):
     ##STEP 8
     #closes the connection with the database
     con.close()
+
+    print('database created in {db_dir} !')
 
 
 def update_db(db_dir: str = r'investments_database.db'):
@@ -258,6 +275,8 @@ def update_db(db_dir: str = r'investments_database.db'):
     ##STEP 6
     #closes the connection with the database
     con.close()
+
+    print('database {db_dir} updated!')
 
 
 def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'], rolling: bool = False, window_size: int = 1) -> pd.DataFrame:
