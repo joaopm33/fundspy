@@ -63,7 +63,7 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             
             return cotas
         except:
-            print('nao ha arquivo para os parametros passados.')
+            print('theres no report for this date yet!.\n')
     
     if int(year) < 2017:
         try:
@@ -107,12 +107,14 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
    """
     ##STEP 1:
     #starts the new database
+    print (f'creating SQLite database: {db_dir} \n')
     con = sqlite3.connect(db_dir)
 
 
     ##STEP 2:
     #downloads each report in the cvm website and pushes it to the sql database daily_quotas table
-    
+    print('downloading daily reports from the CVM website... \n')
+
     #for each year between 2017 and now
     for year in tqdm(range(start_year, datetime.date.today().year + 1), position = 0, leave=True): 
         for mth in range(1, 13): #for each month
@@ -120,9 +122,9 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
             if year>=2017: 
                 informe = cvm_informes(str(year), mth)
 
-                if target_funds: #if the target funds list is not empty, uses it to filter the result set
-                    informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                 try:
+                    if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                        informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                     #appends information to the sql database
                     informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
                 except:
@@ -133,9 +135,9 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
                 if mth == 12:
                     informe = cvm_informes(str(year), mth)
 
-                    if target_funds: #if the target funds list is not empty, uses it to filter the result set
-                        informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                     try:
+                        if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                            informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                         #appends information to the sql database
                         informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
                     except:
@@ -145,6 +147,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
     ##STEP 3:                    
     #creates index in the daily_quotas table to make future select queries faster. 
     #tradeoff: The updating proceesses of the database will be slower.
+    print('creating sql index on "CNPJ_FUNDO", "DT_COMPTC" ... \n')
     index = '''
     CREATE INDEX "cnpj_date" ON "daily_quotas" (
         "CNPJ_FUNDO" ASC,
@@ -160,12 +163,18 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
     
     ##STEP 4:
     #downloads cadastral information from CVM of the fundos and pushes it to the database
-    info_cad = pd.read_csv('http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv', sep = ';', encoding='latin1')
+    print('downloading cadastral information from cvm...\n')
+    info_cad = pd.read_csv('http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv', sep = ';', encoding='latin1',
+                           dtype = {'RENTAB_FUNDO': object,'FUNDO_EXCLUSIVO': object, 'TRIB_LPRAZO': object, 'ENTID_INVEST': object,
+                                    'INF_TAXA_PERFM': object, 'INF_TAXA_ADM': object, 'DIRETOR': object, 'CNPJ_CONTROLADOR': object,
+                                    'CONTROLADOR': object}
+                            )
     info_cad.to_sql('info_cadastral_funds', con, index=False)
 
 
     ##STEP 5:
     #downloads daily ibovespa prices from investing.com and pushes it to the database
+    print('downloading ibovespa index prices from investing.com ...\n')
     ibov = investpy.get_etf_historical_data(etf='Ishares Ibovespa', 
                                         country='brazil',
                                         from_date='01/01/2005',
@@ -176,6 +185,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
     ##STEP 6:
     #downloads daily selic returns (basic interest rate of the brazilian economy) 
     #from the brazillian central bank and pushes it to the database
+    print('downloading selic rates from the Brazilian Central Bank website...\n')
     selic = pd.read_json('http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json'.format(11))
     selic['data'] = pd.to_datetime(selic['data'], format = '%d/%m/%Y')
     selic['valor'] = selic['valor']/100 #calculates decimal rate from the percentual value
@@ -186,6 +196,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
 
     ##STEP 7:
     #creates a table with a log of the execution timestamps of the script
+    print('creating the log table...\n')
     update_log = pd.DataFrame({'date':[datetime.datetime.now()], 'log':[1]})
     update_log.to_sql('update_log', con, if_exists = 'append', index=False)
 
@@ -193,13 +204,24 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
     ##STEP 8
     #closes the connection with the database
     con.close()
+    print('connection with the database closed! \n')
 
-    print('database created in {db_dir} !')
+    print(f'Success: database created in {db_dir} !\n')
 
 
 def update_db(db_dir: str = r'investments_database.db'):
+    """Updates the database data 
+
+    Parameters:
+    db_dir (str): The path of the dabatabse file to be updated. Defaults to 'investments_database.db'.
+
+    Returns:
+    Theres no return from the function
+
+   """
     ##STEP 1
     #connects to the database
+    print(f'connected with the database {db_dir}\n')
     con = sqlite3.connect(db_dir)
 
 
@@ -217,6 +239,7 @@ def update_db(db_dir: str = r'investments_database.db'):
 
     ##STEP 3
     #delete information that will be updated from the database tables
+    print('deleting redundant data from the database... \n')
     tables = {'daily_quotas' : ['DT_COMPTC',last_quota.strftime("%Y-%m-01")],
               'ibov_returns' : ['Date',last_update.strftime("%Y-%m-%d")]}
     for i in tables:
@@ -238,6 +261,7 @@ def update_db(db_dir: str = r'investments_database.db'):
     #Pulls new data from CVM, investpy and the brazilian central bank
     #and pushes it to the database
     
+    print('downloading new daily reports from the CVM website...\n')
     # downloads the daily cvm repport for each month between the last update and today
     for m in range(num_months+1): 
         data_alvo = last_quota + relativedelta(months=+m) 
@@ -247,7 +271,17 @@ def update_db(db_dir: str = r'investments_database.db'):
         except:
             pass 
 
+    #downloads cadastral information from CVM of the fundos and pushes it to the database
+    print('downloading updated cadastral information from cvm...\n')
+    info_cad = pd.read_csv('http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv', sep = ';', encoding='latin1',
+                           dtype = {'RENTAB_FUNDO': object,'FUNDO_EXCLUSIVO': object, 'TRIB_LPRAZO': object, 'ENTID_INVEST': object,
+                                    'INF_TAXA_PERFM': object, 'INF_TAXA_ADM': object, 'DIRETOR': object, 'CNPJ_CONTROLADOR': object,
+                                    'CONTROLADOR': object}
+                            )
+    info_cad.to_sql('info_cadastral_funds', con, if_exists='replace', index=False)
+
     #updates daily interest returns (selic)
+    print('updating selic rates...\n')
     selic = pd.read_json('http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json'.format(11))
     selic['data'] = pd.to_datetime(selic['data'], format = '%d/%m/%Y')
     selic = selic[selic.data>=(last_update + datetime.timedelta(-1))]
@@ -256,6 +290,7 @@ def update_db(db_dir: str = r'investments_database.db'):
     selic.to_sql('selic_rates', con , if_exists = 'append', index=False) 
 
     #updates ibovespa data
+    print('updating ibovespa returns...\n')
     try:
         ibov = investpy.get_etf_historical_data(etf='Ishares Ibovespa', 
                                                 country='brazil',
@@ -268,6 +303,7 @@ def update_db(db_dir: str = r'investments_database.db'):
 
     ##STEP 5
     #updates the log in the database
+    print('updating the log...\n')
     update_log = pd.DataFrame({'date':[datetime.datetime.now()], 'log':[1]})
     update_log.to_sql('update_log', con, if_exists = 'append', index=False)
 
@@ -275,8 +311,9 @@ def update_db(db_dir: str = r'investments_database.db'):
     ##STEP 6
     #closes the connection with the database
     con.close()
+    print('connection with the database closed!\n')
 
-    print('database {db_dir} updated!')
+    print(f'database {db_dir} updated!\n')
 
 
 def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'], rolling: bool = False, window_size: int = 1) -> pd.DataFrame:
