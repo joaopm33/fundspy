@@ -30,7 +30,7 @@ import numpy as np
 #other packages
 from tqdm import tqdm
 from workalendar.america import Brazil
-from dateutil.relativedelta import *
+from dateutil.relativedelta import relativedelta
 
 def cvm_informes (year: int, mth: int) -> pd.DataFrame:
     """Downloads the daily report (informe diario) from CVM for a given month and year. 
@@ -333,21 +333,27 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
     if rolling == True:
         window_size = 1
 
+    #garantees that the values are positive, once division by zero returns infinite
+    returns = df.copy(deep=True)
+    for col in values:
+        returns = returns[returns[col]>0]
+    returns.loc[:, values] = returns.loc[:, values].fillna(method = 'backfill')
+
     #calculates the percentual change in the rolling windows specified for each group
-    returns = df.groupby(group, sort = False, as_index = True)[values].apply(lambda x: x.pct_change(window_size))
+    returns = returns.groupby(group, sort = False, as_index = True)[values].apply(lambda x: x.pct_change(window_size))
     
     #renames the columns
     col_names = [(value + '_return_' + str(window_size) + 'd') for value in values]
     returns.columns = col_names
 
     #if the parameter rolling = False, returns the original data with the added rolling returns
-    if rolling == False:
+    if rolling == True:
         df2 = df.merge(returns, how='left', left_index=True, right_index=True)
         return df2
 
     #if the parameter rolling = True, returns the total compound returns in the period, the number of days
     # and the Compound Annual Growth Rate (CAGR)
-    elif rolling == True: 
+    elif rolling == False: 
         returns = df[[group]].merge(returns, left_index = True, right_index = True)
         
         #calculates the compound returns
@@ -365,8 +371,9 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
         #calculates the Compound Annual Growth Rate (CAGR)
         values = col_names[:-1]        
         col_names = [i.replace('_cum_return', '_cagr') for i in values]
-        returns[col_names] = (returns.loc[:,values]
-                                           .apply(lambda x: ((x + 1)**(252/returns.days))-1))
+        returns[col_names] = (returns.dropna()
+                                     .loc[:,values]
+                                     .apply(lambda x: ((x + 1)**(252/returns.days))-1))
 
         return returns                                   
 
@@ -386,27 +393,26 @@ def cum_returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL
     pd.DataFrame: A pandas dataframe with the cumulative % returns for each asset.
 
    """
-
-    cum_returns = returns(df, group = group, values = values) #calculates  the daily returns
+    returns_df = returns(df, group = group, values = values, rolling=True) #calculates  the daily returns
     
     #calculates the cumulative returns in each day for each group
-    cum_returns = cum_returns.groupby(group)[[value + '_return_1d' for value in values]].expanding().apply(lambda x: np.prod(x+1)-1)
+    cum_returns = returns_df.groupby(group)[[value + '_return_1d' for value in values]].expanding().apply(lambda x: np.prod(x+1)-1)
     
     #renames the columns
     cum_returns.columns = [i + '_cum_return' for i in values]
     cum_returns.reset_index(level = 0, inplace = True)
 
-    cum_returns = df.merge(cum_returns, on = group)
+    cum_returns = returns_df.merge(cum_returns, how = 'right', on = group, left_index = True, right_index = True)
     return cum_returns
 
 
-def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 252) -> pd.DataFrame:
-    """Returns the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets.
+def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA_return_1d'], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 252) -> pd.DataFrame:
+    """Returns the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns.
 
     Parameters:
     df (pd.DataFrame): Pandas dataframe with the needed data
     group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices. Example: ['asset_price', 'index price']. 
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: ['asset_price', 'index price']. 
     rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility
     returns frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility.
     window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over.
@@ -463,8 +469,9 @@ def drawdown(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QU
    """
     df2 = df.copy(deep = True)
     for value in values:
-        df2[('cum_max_'+ value)] = df2.groupby([group],sort=False,as_index=False)[value].expanding(min_periods = 1).max().to_numpy() 
-        df2[('drawdown_'+ value)] = (df2[value]/df2[('cum_max_'+ value)])-1
+        col = 'cum_max_'+ value
+        df2[col] = df2.groupby([group])[[value]].cummax().to_numpy() 
+        df2[('drawdown_'+ value)] = (df2[value]/df2[col])-1
     return df2
 
 
@@ -506,7 +513,7 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
         raise Exception("Wrong Parameter: rolling can only be True or False") 
 
 
-def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str) -> pd.DataFrame:
+def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = 'correlation_benchmark') -> pd.DataFrame:
     """Returns the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets.
 
     Parameters:
