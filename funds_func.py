@@ -190,7 +190,12 @@ def start_db(db_dir: str = 'investments_database.db', start_year: str = 2005, ta
     selic['data'] = pd.to_datetime(selic['data'], format = '%d/%m/%Y')
     selic['valor'] = selic['valor']/100 #calculates decimal rate from the percentual value
 
-    selic.rename(columns = {'data':'date', 'valor':'value'}, inplace = True)
+    #calculates asset "price" considering day 0 price as 1
+    selic.loc[0,'price'] = 1 * (1 + selic.loc[0,'valor'])
+    for i in range(1, len(selic)):
+        selic.loc[i, 'price'] = selic.loc[i-1, 'price'] * (1 + selic.loc[i,'valor'])
+
+    selic.rename(columns = {'data':'date', 'valor':'rate'}, inplace = True)
     selic.to_sql('selic_rates', con , index=False)  
 
 
@@ -284,9 +289,17 @@ def update_db(db_dir: str = r'investments_database.db'):
     print('updating selic rates...\n')
     selic = pd.read_json('http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json'.format(11))
     selic['data'] = pd.to_datetime(selic['data'], format = '%d/%m/%Y')
-    selic = selic[selic.data>=(last_update + datetime.timedelta(-1))]
-    selic['valor'] = selic['valor']/100
-    selic.rename(columns = {'data':'date', 'valor':'value'}, inplace = True)
+    selic['valor'] = selic['valor']/100 #calculates decimal rate from the percentual value
+
+    #calculates asset "price" considering day 0 price as 1
+    selic.loc[0,'price'] = 1 * (1 + selic.loc[0,'valor'])
+    for i in range(1, len(selic)):
+        selic.loc[i, 'price'] = selic.loc[i-1, 'price'] * (1 + selic.loc[i,'valor'])
+
+    selic.rename(columns = {'data':'date', 'valor':'rate'}, inplace = True)
+
+    #filters only new data
+    selic = selic[selic.date>=(last_update + datetime.timedelta(-1))]
     selic.to_sql('selic_rates', con , if_exists = 'append', index=False) 
 
     #updates ibovespa data
@@ -330,7 +343,7 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
     pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows.
 
    """
-    if rolling == True:
+    if rolling == False:
         window_size = 1
 
     #garantees that the values are positive, once division by zero returns infinite
@@ -406,7 +419,7 @@ def cum_returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL
     return cum_returns
 
 
-def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA_return_1d'], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 252) -> pd.DataFrame:
+def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA_return_1d'], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 21) -> pd.DataFrame:
     """Returns the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns.
 
     Parameters:
@@ -414,16 +427,19 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
     group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'
     values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: ['asset_price', 'index price']. 
     rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility
-    returns frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility.
+    returns_frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility.
     window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over.
 
     Returns:
     pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows.
 
    """
-    #Returns 
     if rolling == False:
-        vol = df.groupby(group)[values].std(ddof=0) 
+        vol = df.copy(deep=True)
+        for col in values:
+            vol = df[df[col].notnull()]
+
+        vol = vol.groupby(group)[values].std(ddof=0) 
         
         #renames the columns
         col_names = [(value + '_vol') for value in values]        
@@ -434,10 +450,15 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
         
         return vol
 
-    elif rolling == True:    
-        vol = (df.groupby(group, sort=False)[values].rolling(window_size).std(ddof=0) #standars deviation in the rolling period
-                .reset_index()
-                .drop(columns=['level_1'])
+    elif rolling == True: 
+        vol = df.copy(deep=True)
+        for col in values:
+            vol = df[df[col].notnull()]
+        
+        vol = (vol.groupby(group)[values]
+                  .rolling(window_size)
+                  .std(ddof=0) #standards deviation in the rolling period
+                  .reset_index(level = 0)
                 )
         #renames the columns
         col_names = [(value + '_vol_' + str(window_size) + 'rw') for value in values]
@@ -492,20 +513,21 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
    """
     if rolling == False: 
         #calculates the correlation between assests returns for the whole period
-        corr = df.groupby([group])[[asset_returns,index_returns]].corr()
+        corr = df[df[asset_returns].notnull()].groupby([group])[[asset_returns,index_returns]].corr()
         corr = corr.xs(index_returns,level = 1, drop_level=False)
         corr = corr.reset_index(level = 1, drop = True)
         corr = corr.drop(columns=[index_returns])
         corr.columns=['correlation_benchmark']
-        #df2 = df.merge(corr, left_on = group, right_index = True)
         return corr
     elif rolling == True:  
         #calculates the correlation between the assests returns across rolling windows     
-        corr = (df.groupby(group, sort=False)[[asset_returns,index_returns]].rolling(window_size).corr() 
-                  .xs(index_returns,level = 2, drop_level=True) #drops reduntant level of the corr matrix
-                  .reset_index()
-                  .drop(columns=[index_returns, 'level_1'])
-                  .rename(columns = {asset_returns:'correl'})
+        corr = (df[df[asset_returns].notnull()].groupby(group)[[asset_returns,index_returns]]
+                                              .rolling(window_size)
+                                              .corr() 
+                                              .xs(index_returns,level = 2, drop_level=True) #drops reduntant level of the corr matrix
+                                              .reset_index(level = 0)
+                                              .drop(columns=[index_returns])
+                                              .rename(columns = {asset_returns:'correlation_benchmark'})
                 )
         df2 = df.merge(corr.drop(columns = [group]),left_index=True,right_index=True)
         return df2
@@ -566,6 +588,7 @@ def sharpe(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_vo
 
     df2 = df.copy(deep = True)
     df2['sharpe'] = (df2[asset_returns] - df2[riskfree_returns]) / df2[asset_vol]
+    return df2
 
 
 def sortino(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_negative_vol: str) -> pd.DataFrame:
@@ -583,16 +606,17 @@ def sortino(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_n
    """
     df2 = df.copy(deep = True)
     df2['sortino'] = (df2[asset_returns] - df2[riskfree_returns]) / df2[asset_negative_vol]
-    return sortino
+    return df2
 
 
-def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, group: str = 'CNPJ_FUNDO') -> pd.DataFrame:
+def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, returns_frequency: int, group: str = 'CNPJ_FUNDO') -> pd.DataFrame:
     """Returns the capture ratios (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
 
     Parameters:
     df (pd.DataFrame): Pandas dataframe with the needed data
     asset_returns (str): name of the column in the dataframe with the assets returns
     bench_returns (str): name of the column in the dataframe with the benchmark returns
+    returns_frequency: (int): Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). 
     group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'
     
     Returns:
@@ -600,30 +624,25 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, grou
 
    """   
 
-    #df2 = df2[(df2[asset_returns].notnull()) & (df2[bench_returns].notnull())]
-
-    df_bull = df.copy(deep = True)
-    df_bear = df.copy(deep = True)
+    df_bull = df[(df[asset_returns].notnull()) & (df[bench_returns].notnull())].copy(deep = True)
+    df_bear = df[(df[asset_returns].notnull()) & (df[bench_returns].notnull())].copy(deep = True)
 
     df_bull = df_bull[df_bull[bench_returns] > 0] #dataframe with only positive returns from the benchmark
     df_bear = df_bear[df_bear[bench_returns] <= 0] #dataframe with only negative returns from the benchmark
 
     tables = [df_bull, df_bear]
     for i in range(len(tables)): #performs set of operations in each table
-        #adds 1 to the returns
-        tables[i][asset_returns] = tables[i][asset_returns]+1
-        tables[i][bench_returns] = tables[i][bench_returns]+1
-
-        compound = tables[i].groupby(group)[[asset_returns,bench_returns]].prod() #calculates compound returns + 1
-
+        #calculates total returns + 1
+        compound = tables[i].groupby(group)[[asset_returns,bench_returns]].apply(lambda x: np.prod(1+x))
+        
         #counts number of periods
         nperiods = tables[i].groupby(group)[[asset_returns]].count().rename(columns = {asset_returns:'n_periods'})
 
         tables[i] = compound.merge(nperiods, on = group, how  ='left')#joins tables defined above
 
         #calculates the annualized returns (CAGR)
-        tables[i][asset_returns]=(tables[i][asset_returns]**(1/tables[i]['n_periods']))-1
-        tables[i][bench_returns]=(tables[i][bench_returns]**(1/tables[i]['n_periods']))-1
+        tables[i][asset_returns]=(tables[i][asset_returns]**((252/returns_frequency)/tables[i]['n_periods']))-1
+        tables[i][bench_returns]=(tables[i][bench_returns]**((252/returns_frequency)/tables[i]['n_periods']))-1
 
         tables[i]['capture'] = tables[i][asset_returns]/tables[i][bench_returns] #calculates the capture
 
