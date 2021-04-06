@@ -1,4 +1,4 @@
-# funds_py
+# fundspy
 
 This python based project helps you to extract and analyze data related to brazilian investment funds. 
 It has functions to start and update a SQLite database containing cadastral information and daily quotas of all investment funds in brazil since 2005, as well as the ibovespa index and selic (the base interest rate of the brazilian economy).
