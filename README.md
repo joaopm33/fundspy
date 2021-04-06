@@ -2,7 +2,7 @@
 
 This python based project helps you to extract and analyze data related to brazilian investment funds. 
 It has functions to start and update a SQLite database containing cadastral information and daily quotas of all investment funds in brazil since 2005, as well as the ibovespa index and selic (the base interest rate of the brazilian economy).
-There are also functions to help you calculate importante performance metrics for the investment funds, such as returns, volatility, correlation with indexes, beta, alpha, sharpe ratio, sortino ratio and capture ratios.
+There are also functions to help you calculate important performance metrics for the investment funds, such as returns, volatility, correlation with indexes, beta, alpha, sharpe ratio, sortino ratio and capture ratios.
 
 
 ## Getting Started
@@ -21,7 +21,7 @@ Now you are all set up to start using the package.
 
 ## Main Functionalities
 
-The main use cases this library covers are starting a investment funds database, updating it and calculatin performance metrics with pre built functions.
+The main use cases this library covers are starting a investment funds database, updating it and calculating performance metrics with pre built functions.
 
 ### Building the database
 
@@ -35,8 +35,8 @@ This will create a ~6Gb SQLite database in your disk named "investments_database
 
 You can also open the "start_db.py" file in a text editor to change the start_db function parameters. To get a smaller subset of the available data, use the parameters: 
 
-* ```start_year``` to set the minimal year used as filter 
-* ```target_funds``` to pass a list of target funds CNPJs (unique ids) 
+* ```start_year``` to set the minimal year used as filter. 
+* ```target_funds``` to pass a list of target funds CNPJs (unique ids).
 
 This can save you a lot of disk space, but will of course reduce the amount of data you get.
 
@@ -59,16 +59,21 @@ This function will collect the data available between the last database update a
 
 ### Calculating performance metrics for the investment funds
 This package contains pre-built performance metrics for investment funds analysis:
-* ```returns``` function - Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the [CAGR](https://www.investopedia.com/terms/c/cagr.asp) in this option)
-* ```cum_returns``` function - Calculates the [cumulative % returns](https://www.investopedia.com/terms/c/cumulativereturn.asp) for the given assets
-* ```drawdown``` function - [Calculates the drawdown](https://www.investopedia.com/terms/d/drawdown.asp) (the % the asset is down from its all-time-high) for givens assets
-* ```volatility``` function - Calculates the [annualized volatillity](https://www.investopedia.com/terms/v/volatility.asp) (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period
-* ```corr_benchmark``` function - Calculates the [correlation](https://www.investopedia.com/terms/c/correlationcoefficient.asp) between assets and a given benchmark both in rolling windows or for the full available period
-* ```beta``` function - Calculates the [beta](https://www.investopedia.com/terms/b/beta.asp) (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets
-* ```alpha``` function - Calculates the [alpha](https://www.investopedia.com/terms/a/alpha.asp) (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets
-* ```sharpe``` function - Calculates the [sharpe ratio](https://www.investopedia.com/terms/s/sharperatio.asp) (average return earned in excess of the risk-free rate per unit of volatility) of the given assets
-* ```sortino``` function - Calculates the [sortino ratio](https://www.investopedia.com/terms/s/sortinoratio.asp) (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets
+* ```returns``` function - Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the [CAGR](https://www.investopedia.com/terms/c/cagr.asp) in this option).
+* ```cum_returns``` function - Calculates the [cumulative % returns](https://www.investopedia.com/terms/c/cumulativereturn.asp) for the given assets.
+* ```drawdown``` function - [Calculates the drawdown](https://www.investopedia.com/terms/d/drawdown.asp) (the % the asset is down from its all-time-high) for givens assets.
+* ```volatility``` function - Calculates the [annualized volatillity](https://www.investopedia.com/terms/v/volatility.asp) (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period.
+* ```corr_benchmark``` function - Calculates the [correlation](https://www.investopedia.com/terms/c/correlationcoefficient.asp) between assets and a given benchmark both in rolling windows or for the full available period.
+* ```beta``` function - Calculates the [beta](https://www.investopedia.com/terms/b/beta.asp) (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets.
+* ```alpha``` function - Calculates the [alpha](https://www.investopedia.com/terms/a/alpha.asp) (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets.
+* ```sharpe``` function - Calculates the [sharpe ratio](https://www.investopedia.com/terms/s/sharperatio.asp) (average return earned in excess of the risk-free rate per unit of volatility) of the given assets.
+* ```sortino``` function - Calculates the [sortino ratio](https://www.investopedia.com/terms/s/sortinoratio.asp) (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets.
 * ```capture_ratio``` function - Calculates the [capture ratios](https://cleartax.in/s/capture-ratio) (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
+
+
+## Documentation and Examples
+* You can access functions documentation [here](https://joaopm33.github.io/fundspy/docs/fundspy.html).
+* Theres also a Jupyter Notebook with use examples of all performance metrics functions [here](https://joaopm33.github.io/fundspy/docs/examples.html).
 
 
 ## Authors
