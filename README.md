@@ -5,6 +5,11 @@ It has functions to start and update a SQLite database containing cadastral info
 There are also functions to help you calculate important performance metrics for the investment funds, such as returns, volatility, correlation with indexes, beta, alpha, sharpe ratio, sortino ratio and capture ratios.
 
 
+## Documentation and Examples
+* You can access functions documentation [here](https://joaopm33.github.io/fundspy/docs/fundspy.html).
+* Theres also a Jupyter Notebook with use examples of all performance metrics functions [here](https://joaopm33.github.io/fundspy/docs/examples.html).
+
+
 ## Getting Started
 You will need python 3.5 (at least) for running this project. To start, first clone this repository to your local machine.
 
@@ -69,11 +74,6 @@ This package contains pre-built performance metrics for investment funds analysi
 * ```sharpe``` function - Calculates the [sharpe ratio](https://www.investopedia.com/terms/s/sharperatio.asp) (average return earned in excess of the risk-free rate per unit of volatility) of the given assets.
 * ```sortino``` function - Calculates the [sortino ratio](https://www.investopedia.com/terms/s/sortinoratio.asp) (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets.
 * ```capture_ratio``` function - Calculates the [capture ratios](https://cleartax.in/s/capture-ratio) (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
-
-
-## Documentation and Examples
-* You can access functions documentation [here](https://joaopm33.github.io/fundspy/docs/fundspy.html).
-* Theres also a Jupyter Notebook with use examples of all performance metrics functions [here](https://joaopm33.github.io/fundspy/docs/examples.html).
 
 
 ## Authors
