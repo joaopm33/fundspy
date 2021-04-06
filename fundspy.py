@@ -1,9 +1,9 @@
 """
 Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. 
 
-Author: Joao Penido Monteiro \n
-Github: github.com/joaopm33 \n
-Linkedin: linkedin.com/in/joao-penido-monteiro/ \n
+<b>Author:</b> <a href="https://www.linkedin.com/in/joao-penido-monteiro/">Joao Penido Monteiro</a>\n
+<b>Github:</b> <a href="https://github.com/joaopm33/fundspy">Project repository</a>\n
+<b>Examples:</b> <a href="https://joaopm33.github.io/fundspy/docs/examples.html">Functions example notebook</a>\n
 """
 
 #modules from the python standard library
@@ -27,13 +27,13 @@ from workalendar.america import Brazil
 from dateutil.relativedelta import relativedelta
 
 def cvm_informes (year: int, mth: int) -> pd.DataFrame:
-    """Downloads the daily report (informe diario) from CVM for a given month and year
+    """Downloads the daily report (informe diario) from CVM for a given month and year\n
 
-    Parameters:\n
+    <b>Parameters:</b>\n
     year (int): The year of the report the function should download\n
-    mth (int): The month of the report the function should download
+    mth (int): The month of the report the function should download\n
 
-    Returns:
+    <b>Returns:</b>\n
     pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2017, will contain data regarding the whole year
 
    """
@@ -88,15 +88,15 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
 
 
 def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, target_funds: list = []):
-    """Starts a SQLite database with 3 tables: daily_quotas (funds data), ibov_returns (ibovespa index data) and selic_rates (the base interest rate for the brazilian economy) 
+    """Starts a SQLite database with 3 tables: daily_quotas (funds data), ibov_returns (ibovespa index data) and selic_rates (the base interest rate for the brazilian economy).\n 
 
-    Parameters:\n
-    db_dir (str): The path of the dabatabse file to be created. Defaults to 'investments_database.db', creating the file in the current working directory\n
-    start_year (int): Opitional (Defaults to 2005). Starting year for the data collection. . Can be use to reduce the size of the database\n
-    target_funds (list): Opitional (Defaults to []). List of target funds CNPJs. Only funds with CNPJs contained in this list will be included in the database. Can be used to radically reduce the size of the database. If none is specified, all funds will be included
+    <b>Parameters:</b>\n
+    db_dir (str): The path of the dabatabse file to be created. Defaults to 'investments_database.db', creating the file in the current working directory.\n
+    start_year (int): Opitional (Defaults to 2005). Starting year for the data collection. . Can be use to reduce the size of the database.\n
+    target_funds (list): Opitional (Defaults to []). List of target funds CNPJs. Only funds with CNPJs contained in this list will be included in the database. Can be used to radically reduce the size of the database. If none is specified, all funds will be included.\n
 
-    Returns:
-    Theres no return from the function
+    <b>Returns:</b>\n
+    Theres no return from the function.
 
    """
     ##STEP 1:
@@ -137,7 +137,10 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
                     except:
                         pass
 
-
+    #pushes target funds to sql for use when updating the database
+    if target_funds:
+        target_df = pd.DataFrame({'targets':target_funds})
+        target_df.to_sql('target_funds', con , index=False)                    
     ##STEP 3:                    
     #creates index in the daily_quotas table to make future select queries faster. 
     #tradeoff: The updating proceesses of the database will be slower.
@@ -163,6 +166,8 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
                                     'INF_TAXA_PERFM': object, 'INF_TAXA_ADM': object, 'DIRETOR': object, 'CNPJ_CONTROLADOR': object,
                                     'CONTROLADOR': object}
                             )
+    if target_funds:
+        info_cad = info_cad[info_cad.CNPJ_FUNDO.isin(target_funds)]
     info_cad.to_sql('info_cadastral_funds', con, index=False)
 
 
@@ -209,13 +214,13 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
 
 
 def update_db(db_dir: str = r'investments_database.db'):
-    """Updates the database
+    """Updates the database.\n
 
-    Parameters:\n
-    db_dir (str): The path of the dabatabse file to be updated. Defaults to 'investments_database.db'
+    <b>Parameters:</b>\n
+    db_dir (str): The path of the dabatabse file to be updated. Defaults to 'investments_database.db'.\n
 
-    Returns:
-    Theres no return from the function
+    <b>Returns:</b>\n
+    Theres no return from the function.
 
    """
     ##STEP 1
@@ -259,12 +264,19 @@ def update_db(db_dir: str = r'investments_database.db'):
     ##STEP 4
     #Pulls new data from CVM, investpy and the brazilian central bank
     #and pushes it to the database
+
+    try:#tries to read targets funds if they were specified when starting the database
+        target_funds = pd.read_sql('select targets from target_funds', con).targets.to_list()
+    except:
+        target_funds = []
     
     print('downloading new daily reports from the CVM website...\n')
     # downloads the daily cvm repport for each month between the last update and today
     for m in range(num_months+1): 
         data_alvo = last_quota + relativedelta(months=+m) 
-        informe = cvm_informes(data_alvo.year, data_alvo.month)        
+        informe = cvm_informes(data_alvo.year, data_alvo.month)
+        if target_funds:
+            informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
         try:
             informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
         except:
@@ -277,6 +289,8 @@ def update_db(db_dir: str = r'investments_database.db'):
                                     'INF_TAXA_PERFM': object, 'INF_TAXA_ADM': object, 'DIRETOR': object, 'CNPJ_CONTROLADOR': object,
                                     'CONTROLADOR': object}
                             )
+    if target_funds: #filters target funds if they were specified when building the database.
+        info_cad = info_cad[info_cad.CNPJ_FUNDO.isin(target_funds)]
     info_cad.to_sql('info_cadastral_funds', con, if_exists='replace', index=False)
 
     #updates daily interest returns (selic)
@@ -324,17 +338,17 @@ def update_db(db_dir: str = r'investments_database.db'):
 
 
 def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'], rolling: bool = False, window_size: int = 1) -> pd.DataFrame:
-    """Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)
+    """Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case).\n
 
-    Parameters:
-    df (pd.DataFrame): Pandas dataframe with the needed columns\n
-    group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code')\n
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price'])\n
-    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns\n
-    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over
+    <b>Parameters</b>:\n
+    df (pd.DataFrame): Pandas dataframe with the needed columns.\n
+    group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code').\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price']).\n
+    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns.\n
+    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over.\n
 
-    Returns:
-    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows
+    <b>Returns:</b>\n
+    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows.
 
    """
     if rolling == False:
@@ -389,15 +403,15 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
         
 
 def cum_returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA']) -> pd.DataFrame:
-    """Calculates the cumulative % returns for the given assets
+    """Calculates the cumulative % returns for the given assets.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed columns\n
-    group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code')\n
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price'])
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed columns.\n
+    group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code').\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price']).\n
    
-    Returns:
-    pd.DataFrame: A pandas dataframe with the cumulative % returns for each asset
+    <b>Returns:</b>\n
+    pd.DataFrame: A pandas dataframe with the cumulative % returns for each asset.
 
    """
     returns_df = returns(df, group = group, values = values, rolling=True) #calculates  the daily returns
@@ -414,18 +428,18 @@ def cum_returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL
 
 
 def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA_return_1d'], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 21) -> pd.DataFrame:
-    """Calculates the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period
+    """Calculates the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'\n
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: ['asset_price', 'index price'] \n
-    rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility\n
-    returns_frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility\n
-    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'.\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: ['asset_price', 'index price']. \n
+    rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility.\n
+    returns_frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility.\n
+    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over.\n
 
-    Returns:
-    pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows
+    <b>Returns:</b>\n
+    pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows.
 
    """
     if rolling == False:
@@ -471,15 +485,15 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
   
 
 def drawdown(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'])-> pd.DataFrame:
-    """Calculates the drawdown (the % the asset is down from its all-time-high) for givens assets
+    """Calculates the drawdown (the % the asset is down from its all-time-high) for givens assets.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'\n
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices. Example: ['asset_price', 'index price']\n
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'.\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices. Example: ['asset_price', 'index price'].\n
    
-    Returns:
-    pd.DataFrame: The original pandas dataframe with added columns for the all time high and drawdown of the given assets
+    <b>Returns:</b>\n
+    pd.DataFrame: The original pandas dataframe with added columns for the all time high and drawdown of the given assets.
 
    """
     df2 = df.copy(deep = True)
@@ -491,18 +505,18 @@ def drawdown(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QU
 
 
 def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, group: str = 'CNPJ_FUNDO', rolling: bool = False, window_size: int = 252) -> pd.DataFrame:
-    """Calculates the correlation between assets and a given benchmark both in rolling windows or for the full available period
+    """Calculates the correlation between assets and a given benchmark both in rolling windows or for the full available period.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'\n
-    asset_returns (str): name of the column in the dataframe with the assets returns\n
-    index_returns (str): name of the column in the dataframe with the benchmark returns\n
-    rolling (bool): True or False. Indicates if the function will return total correlation for each asset or rolling window correlations\n
-    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'.\n
+    asset_returns (str): name of the column in the dataframe with the assets returns.\n
+    index_returns (str): name of the column in the dataframe with the benchmark returns.\n
+    rolling (bool): True or False. Indicates if the function will return total correlation for each asset or rolling window correlations.\n
+    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over.\n
 
-    Returns:
-    pd.DataFrame: If rolling = False: Pandas dataframe with total correlation for the assets and their benchmarks. If rolling = True: The original pandas dataframe with an added column for the correlation in the rolling windows
+    <b>Returns:</b>\n
+    pd.DataFrame: If rolling = False: Pandas dataframe with total correlation for the assets and their benchmarks. If rolling = True: The original pandas dataframe with an added column for the correlation in the rolling windows.
 
    """
     if rolling == False: 
@@ -530,16 +544,16 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
 
 
 def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = 'correlation_benchmark') -> pd.DataFrame:
-    """Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets
+    """Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    asset_vol (str): name of the column in the dataframe with the assets volatilities\n
-    bench_vol (str): name of the column in the dataframe with the benchmark volatility\n
-    correlation (str): name of the column in the dataframe with the correlations between assets and their benchmarks
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    asset_vol (str): name of the column in the dataframe with the assets volatilities.\n
+    bench_vol (str): name of the column in the dataframe with the benchmark volatility.\n
+    correlation (str): name of the column in the dataframe with the correlations between assets and their benchmarks.\n
 
-    Returns:
-    pd.DataFrame: The original pandas dataframe with an added column for the beta calculation
+    <b>Returns:</b>\n
+    pd.DataFrame: The original pandas dataframe with an added column for the beta calculation.
 
    """
     df2 = df.copy(deep = True)
@@ -548,16 +562,16 @@ def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = 'c
 
 
 def alpha(df: pd.DataFrame, asset_returns: str, bench_returns: str, riskfree_returns: str, beta: str) -> pd.DataFrame:
-    """Calculates the alpha (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets
+    """Calculates the alpha (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets.\n
 
-    Parameters:
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    asset_returns (str): name of the column in the dataframe with the assets returns\n
-    bench_returns (str): name of the column in the dataframe with the benchmark returns\n
-    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n
-    beta (str): name of the column in the dataframe with the assets betas
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    asset_returns (str): name of the column in the dataframe with the assets returns.\n
+    bench_returns (str): name of the column in the dataframe with the benchmark returns.\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns.\n
+    beta (str): name of the column in the dataframe with the assets betas.\n
 
-    Returns:
+    <b>Returns:</b>\n
     pd.DataFrame: The original pandas dataframe with an added column for the alpha calculation.
 
    """
@@ -567,16 +581,16 @@ def alpha(df: pd.DataFrame, asset_returns: str, bench_returns: str, riskfree_ret
 
 
 def sharpe(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_vol: str) -> pd.DataFrame:
-    """Calculates the sharpe ratio (average return earned in excess of the risk-free rate per unit of volatility) of the given assets
+    """Calculates the sharpe ratio (average return earned in excess of the risk-free rate per unit of volatility) of the given assets.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    asset_returns (str): name of the column in the dataframe with the assets returns\n
-    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n 
-    asset_vol (str): name of the column in the dataframe with the assets volatilities
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    asset_returns (str): name of the column in the dataframe with the assets returns.\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns.\n 
+    asset_vol (str): name of the column in the dataframe with the assets volatilities.\n
 
-    Returns:
-    pd.DataFrame: The original pandas dataframe with an added column for the sharpe calculation
+    <b>Returns:</b>\n
+    pd.DataFrame: The original pandas dataframe with an added column for the sharpe calculation.
 
    """
 
@@ -586,15 +600,15 @@ def sharpe(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_vo
 
 
 def sortino(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_negative_vol: str) -> pd.DataFrame:
-    """Calculates the sortino ratio (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets
+    """Calculates the sortino ratio (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    asset_returns (str): name of the column in the dataframe with the assets returns\n
-    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n
-    asset_negative_vol (str): name of the column in the dataframe with the assets downside volatilities (volatility of only negative returns)
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    asset_returns (str): name of the column in the dataframe with the assets returns.\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns.\n
+    asset_negative_vol (str): name of the column in the dataframe with the assets downside volatilities (volatility of only negative returns).\n
     
-    Returns:
+    <b>Returns:</b>\n
     pd.DataFrame: The original pandas dataframe with an added column for the sortino calculation.
 
    """
@@ -604,17 +618,17 @@ def sortino(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_n
 
 
 def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, returns_frequency: int, group: str = 'CNPJ_FUNDO') -> pd.DataFrame:
-    """Calculates the capture ratios (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
+    """Calculates the capture ratios (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.\n
 
-    Parameters:\n
-    df (pd.DataFrame): Pandas dataframe with the needed data\n
-    asset_returns (str): name of the column in the dataframe with the assets returns\n
-    bench_returns (str): name of the column in the dataframe with the benchmark returns\n
-    returns_frequency: (int): Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks)\n 
-    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'
+    <b>Parameters:</b>\n
+    df (pd.DataFrame): Pandas dataframe with the needed data.\n
+    asset_returns (str): name of the column in the dataframe with the assets returns.\n
+    bench_returns (str): name of the column in the dataframe with the benchmark returns.\n
+    returns_frequency: (int): Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks).\n 
+    group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'.\n
     
-    Returns:
-    pd.DataFrame: The original pandas dataframe with added columns for the capture ratios (bull, bear and ratio bull/bear)
+    <b>Returns:</b>\n
+    pd.DataFrame: The original pandas dataframe with added columns for the capture ratios (bull, bear and ratio bull/bear).\n
 
    """   
 
@@ -643,4 +657,3 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
     df2 = tables[1].merge(tables[0], on = group, how  ='left',suffixes=('_bear','_bull'))
     df2['capture_ratio'] = df2['capture_bull']/df2['capture_bear']
     return df2
-
