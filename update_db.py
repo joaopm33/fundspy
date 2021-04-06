@@ -1,4 +1,3 @@
-from funds_func import cvm_informes, update_db
+from fundspy import cvm_informes, update_db
 
-# function parameters: db_dir: str = r'investments_database.db'
-update_db()
+update_db(db_dir = r'investments_database.db')
