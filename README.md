@@ -23,7 +23,7 @@ Now you are all set up to start using the package.
 
 The main use cases this library covers are starting a investment funds database, updating it and calculatin performance metrics with pre built functions.
 
-### Starting the database
+### Building the database
 
 Starting the database is pretty easy: execute the file "start_db.py" in the project directory:
 
