@@ -1,1 +1,1550 @@
 theme: jekyll-theme-cayman
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>fundspy API documentation</title>
+<meta name="description" content="Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>fundspy</code></h1>
+</header>
+<section id="section-intro">
+<p>Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. </p>
+<p>Author: Joao Penido Monteiro </p>
+<p>Github: github.com/joaopm33 </p>
+<p>Linkedin: linkedin.com/in/joao-penido-monteiro/</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. 
+
+Author: Joao Penido Monteiro \n
+Github: github.com/joaopm33 \n
+Linkedin: linkedin.com/in/joao-penido-monteiro/ \n
+&#34;&#34;&#34;
+
+#modules from the python standard library
+import os, os.path
+import zipfile
+import datetime
+import calendar
+import sqlite3
+
+#packages used to download data from the internet
+import requests
+import investpy
+
+#packages used to manipulate data
+import pandas as pd
+import numpy as np
+
+#other packages
+from tqdm import tqdm
+from workalendar.america import Brazil
+from dateutil.relativedelta import relativedelta
+
+def cvm_informes (year: int, mth: int) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Downloads the daily report (informe diario) from CVM for a given month and year
+
+    Parameters:\n
+    year (int): The year of the report the function should download\n
+    mth (int): The month of the report the function should download
+
+    Returns:
+    pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2017, will contain data regarding the whole year
+
+   &#34;&#34;&#34;
+
+    if int(year) &gt;= 2017: #utiliza a estrutura de download para dados a partir de 2017
+        try:
+            mth = f&#34;{mth:02d}&#34;
+            year = str(year)
+            #criamos a url a partis dos parametros passados para a funcao
+            url = &#39;http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_&#39;+year+mth+&#39;.csv&#39;
+            
+            #lemos o arquivo csv retornado pelo link
+            cotas = pd.read_csv(url, sep =&#39;;&#39;)
+            cotas[&#39;DT_COMPTC&#39;] = pd.to_datetime(cotas[&#39;DT_COMPTC&#39;]) #define tipo datetime para coluna de data
+            
+            try:
+                #remove coluna que aparece apenas em certos arquivos para evitar inconsistencias
+                cotas.drop(columns = [&#39;TP_FUNDO&#39;], inplace = True)
+            except:
+                pass
+            
+            return cotas
+        except:
+            print(&#39;theres no report for this date yet!.\n&#39;)
+    
+    if int(year) &lt; 2017:
+        try:
+            year = str(year)
+
+            url = &#39;http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/inf_diario_fi_&#39; + year + &#39;.zip&#39;
+            #envia requests para a url
+            r = requests.get(url, stream=True, verify=False, allow_redirects=True)
+            
+            with open(&#39;informe&#39; + year + &#39;.zip&#39;, &#39;wb&#39;) as fd: #salva arquivo .zip
+                fd.write(r.content)
+
+            zip_inf = zipfile.ZipFile(&#39;informe&#39; + year + &#39;.zip&#39;) #abre arquivo .zip
+            
+            #le os arquivos csv dentro do arquivo zip
+            informes = [pd.read_csv(zip_inf.open(f), sep=&#34;;&#34;) for f in zip_inf.namelist()] 
+            cotas = pd.concat(informes,ignore_index=True)
+            
+            cotas[&#39;DT_COMPTC&#39;] = pd.to_datetime(cotas[&#39;DT_COMPTC&#39;]) #define tipo datetime para coluna de data
+
+            zip_inf.close() #fecha o arquivo zip
+            os.remove(&#39;informe&#39; + year + &#39;.zip&#39;) #apaga o arquivo zip
+            
+            return cotas
+        
+        except Exception as E:
+            print(E)           
+
+
+def start_db(db_dir: str = &#39;investments_database.db&#39;, start_year: int = 2005, target_funds: list = []):
+    &#34;&#34;&#34;Starts a SQLite database with 3 tables: daily_quotas (funds data), ibov_returns (ibovespa index data) and selic_rates (the base interest rate for the brazilian economy) 
+
+    Parameters:\n
+    db_dir (str): The path of the dabatabse file to be created. Defaults to &#39;investments_database.db&#39;, creating the file in the current working directory\n
+    start_year (int): Opitional (Defaults to 2005). Starting year for the data collection. . Can be use to reduce the size of the database\n
+    target_funds (list): Opitional (Defaults to []). List of target funds CNPJs. Only funds with CNPJs contained in this list will be included in the database. Can be used to radically reduce the size of the database. If none is specified, all funds will be included
+
+    Returns:
+    Theres no return from the function
+
+   &#34;&#34;&#34;
+    ##STEP 1:
+    #starts the new database
+    print (f&#39;creating SQLite database: {db_dir} \n&#39;)
+    con = sqlite3.connect(db_dir)
+
+
+    ##STEP 2:
+    #downloads each report in the cvm website and pushes it to the sql database daily_quotas table
+    print(&#39;downloading daily reports from the CVM website... \n&#39;)
+
+    #for each year between 2017 and now
+    for year in tqdm(range(start_year, datetime.date.today().year + 1), position = 0, leave=True): 
+        for mth in range(1, 13): #for each month
+            #loop structure for years equal or after 2017
+            if year&gt;=2017: 
+                informe = cvm_informes(str(year), mth)
+
+                try:
+                    if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                        informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
+                    #appends information to the sql database
+                    informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
+                except:
+                    pass
+            
+            elif year&lt;2017: #loop structure to handle years before 2017 (they have a different file structure)
+                #only executes the download function once every year to avoid duplicates (unique file for each year)       
+                if mth == 12:
+                    informe = cvm_informes(str(year), mth)
+
+                    try:
+                        if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                            informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
+                        #appends information to the sql database
+                        informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
+                    except:
+                        pass
+
+
+    ##STEP 3:                    
+    #creates index in the daily_quotas table to make future select queries faster. 
+    #tradeoff: The updating proceesses of the database will be slower.
+    print(&#39;creating sql index on &#34;CNPJ_FUNDO&#34;, &#34;DT_COMPTC&#34; ... \n&#39;)
+    index = &#39;&#39;&#39;
+    CREATE INDEX &#34;cnpj_date&#34; ON &#34;daily_quotas&#34; (
+        &#34;CNPJ_FUNDO&#34; ASC,
+        &#34;DT_COMPTC&#34; ASC
+    )&#39;&#39;&#39;
+
+    cursor = con.cursor()
+    cursor.execute(index)
+    con.commit()
+
+    cursor.close()
+
+    
+    ##STEP 4:
+    #downloads cadastral information from CVM of the fundos and pushes it to the database
+    print(&#39;downloading cadastral information from cvm...\n&#39;)
+    info_cad = pd.read_csv(&#39;http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv&#39;, sep = &#39;;&#39;, encoding=&#39;latin1&#39;,
+                           dtype = {&#39;RENTAB_FUNDO&#39;: object,&#39;FUNDO_EXCLUSIVO&#39;: object, &#39;TRIB_LPRAZO&#39;: object, &#39;ENTID_INVEST&#39;: object,
+                                    &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
+                                    &#39;CONTROLADOR&#39;: object}
+                            )
+    info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, index=False)
+
+
+    ##STEP 5:
+    #downloads daily ibovespa prices from investing.com and pushes it to the database
+    print(&#39;downloading ibovespa index prices from investing.com ...\n&#39;)
+    ibov = investpy.get_etf_historical_data(etf=&#39;Ishares Ibovespa&#39;, 
+                                        country=&#39;brazil&#39;,
+                                        from_date=&#39;01/01/2005&#39;,
+                                        to_date=datetime.date.today().strftime(&#39;%d/%m/%Y&#39;))
+    ibov.to_sql(&#39;ibov_returns&#39;, con, index=True) 
+
+
+    ##STEP 6:
+    #downloads daily selic returns (basic interest rate of the brazilian economy) 
+    #from the brazillian central bank and pushes it to the database
+    print(&#39;downloading selic rates from the Brazilian Central Bank website...\n&#39;)
+    selic = pd.read_json(&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json&#39;.format(11))
+    selic[&#39;data&#39;] = pd.to_datetime(selic[&#39;data&#39;], format = &#39;%d/%m/%Y&#39;)
+    selic[&#39;valor&#39;] = selic[&#39;valor&#39;]/100 #calculates decimal rate from the percentual value
+
+    #calculates asset &#34;price&#34; considering day 0 price as 1
+    selic.loc[0,&#39;price&#39;] = 1 * (1 + selic.loc[0,&#39;valor&#39;])
+    for i in range(1, len(selic)):
+        selic.loc[i, &#39;price&#39;] = selic.loc[i-1, &#39;price&#39;] * (1 + selic.loc[i,&#39;valor&#39;])
+
+    selic.rename(columns = {&#39;data&#39;:&#39;date&#39;, &#39;valor&#39;:&#39;rate&#39;}, inplace = True)
+    selic.to_sql(&#39;selic_rates&#39;, con , index=False)  
+
+
+    ##STEP 7:
+    #creates a table with a log of the execution timestamps of the script
+    print(&#39;creating the log table...\n&#39;)
+    update_log = pd.DataFrame({&#39;date&#39;:[datetime.datetime.now()], &#39;log&#39;:[1]})
+    update_log.to_sql(&#39;update_log&#39;, con, if_exists = &#39;append&#39;, index=False)
+
+
+    ##STEP 8
+    #closes the connection with the database
+    con.close()
+    print(&#39;connection with the database closed! \n&#39;)
+
+    print(f&#39;Success: database created in {db_dir} !\n&#39;)
+
+
+def update_db(db_dir: str = r&#39;investments_database.db&#39;):
+    &#34;&#34;&#34;Updates the database
+
+    Parameters:\n
+    db_dir (str): The path of the dabatabse file to be updated. Defaults to &#39;investments_database.db&#39;
+
+    Returns:
+    Theres no return from the function
+
+   &#34;&#34;&#34;
+    ##STEP 1
+    #connects to the database
+    print(f&#39;connected with the database {db_dir}\n&#39;)
+    con = sqlite3.connect(db_dir)
+
+
+    ##STEP 2
+    #calculates relevant date limits to the update process
+    Cal=Brazil() #inicializes the brazillian calendar
+    today = datetime.date.today()
+
+    #queries the last update from the log table
+    last_update = pd.to_datetime(pd.read_sql(&#39;select MAX(date) from update_log&#39;, con).iloc[0,0])
+
+    last_quota = Cal.sub_working_days(last_update, 2) #date of the last published cvm repport
+    num_months = (today.year - last_quota.year) * 12 + (today.month - last_quota.month) + 1
+
+
+    ##STEP 3
+    #delete information that will be updated from the database tables
+    print(&#39;deleting redundant data from the database... \n&#39;)
+    tables = {&#39;daily_quotas&#39; : [&#39;DT_COMPTC&#39;,last_quota.strftime(&#34;%Y-%m-01&#34;)],
+              &#39;ibov_returns&#39; : [&#39;Date&#39;,last_update.strftime(&#34;%Y-%m-%d&#34;)]}
+    for i in tables:
+        #sql delete statement to the database
+        delete = f&#39;&#39;&#39;
+        delete
+        from {i}
+        where {tables[i][0]} &gt;= &#34;{tables[i][1]}&#34;
+        &#39;&#39;&#39;
+        
+        cursor = con.cursor()
+        cursor.execute(delete)
+        con.commit()
+        
+    cursor.close()
+
+
+    ##STEP 4
+    #Pulls new data from CVM, investpy and the brazilian central bank
+    #and pushes it to the database
+    
+    print(&#39;downloading new daily reports from the CVM website...\n&#39;)
+    # downloads the daily cvm repport for each month between the last update and today
+    for m in range(num_months+1): 
+        data_alvo = last_quota + relativedelta(months=+m) 
+        informe = cvm_informes(data_alvo.year, data_alvo.month)        
+        try:
+            informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
+        except:
+            pass 
+
+    #downloads cadastral information from CVM of the fundos and pushes it to the database
+    print(&#39;downloading updated cadastral information from cvm...\n&#39;)
+    info_cad = pd.read_csv(&#39;http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv&#39;, sep = &#39;;&#39;, encoding=&#39;latin1&#39;,
+                           dtype = {&#39;RENTAB_FUNDO&#39;: object,&#39;FUNDO_EXCLUSIVO&#39;: object, &#39;TRIB_LPRAZO&#39;: object, &#39;ENTID_INVEST&#39;: object,
+                                    &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
+                                    &#39;CONTROLADOR&#39;: object}
+                            )
+    info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, if_exists=&#39;replace&#39;, index=False)
+
+    #updates daily interest returns (selic)
+    print(&#39;updating selic rates...\n&#39;)
+    selic = pd.read_json(&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json&#39;.format(11))
+    selic[&#39;data&#39;] = pd.to_datetime(selic[&#39;data&#39;], format = &#39;%d/%m/%Y&#39;)
+    selic[&#39;valor&#39;] = selic[&#39;valor&#39;]/100 #calculates decimal rate from the percentual value
+
+    #calculates asset &#34;price&#34; considering day 0 price as 1
+    selic.loc[0,&#39;price&#39;] = 1 * (1 + selic.loc[0,&#39;valor&#39;])
+    for i in range(1, len(selic)):
+        selic.loc[i, &#39;price&#39;] = selic.loc[i-1, &#39;price&#39;] * (1 + selic.loc[i,&#39;valor&#39;])
+
+    selic.rename(columns = {&#39;data&#39;:&#39;date&#39;, &#39;valor&#39;:&#39;rate&#39;}, inplace = True)
+
+    #filters only new data
+    selic = selic[selic.date&gt;=(last_update + datetime.timedelta(-1))]
+    selic.to_sql(&#39;selic_rates&#39;, con , if_exists = &#39;append&#39;, index=False) 
+
+    #updates ibovespa data
+    print(&#39;updating ibovespa returns...\n&#39;)
+    try:
+        ibov = investpy.get_etf_historical_data(etf=&#39;Ishares Ibovespa&#39;, 
+                                                country=&#39;brazil&#39;,
+                                                from_date=last_update.strftime(&#39;%d/%m/%Y&#39;),
+                                                to_date=datetime.date.today().strftime(&#39;%d/%m/%Y&#39;))
+        ibov.to_sql(&#39;ibov_returns&#39;, con , if_exists = &#39;append&#39;, index=False)
+    except:
+        pass
+
+
+    ##STEP 5
+    #updates the log in the database
+    print(&#39;updating the log...\n&#39;)
+    update_log = pd.DataFrame({&#39;date&#39;:[datetime.datetime.now()], &#39;log&#39;:[1]})
+    update_log.to_sql(&#39;update_log&#39;, con, if_exists = &#39;append&#39;, index=False)
+
+
+    ##STEP 6
+    #closes the connection with the database
+    con.close()
+    print(&#39;connection with the database closed!\n&#39;)
+
+    print(f&#39;database {db_dir} updated!\n&#39;)
+
+
+def returns(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;], rolling: bool = False, window_size: int = 1) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)
+
+    Parameters:
+    df (pd.DataFrame): Pandas dataframe with the needed columns\n
+    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;)\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;])\n
+    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns\n
+    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over
+
+    Returns:
+    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows
+
+   &#34;&#34;&#34;
+    if rolling == False:
+        window_size = 1
+
+    #garantees that the values are positive, once division by zero returns infinite
+    returns = df.copy(deep=True)
+    for col in values:
+        returns = returns[returns[col]&gt;0]
+    returns.loc[:, values] = returns.loc[:, values].fillna(method = &#39;backfill&#39;)
+
+    #calculates the percentual change in the rolling windows specified for each group
+    returns = returns.groupby(group, sort = False, as_index = True)[values].apply(lambda x: x.pct_change(window_size))
+    
+    #renames the columns
+    col_names = [(value + &#39;_return_&#39; + str(window_size) + &#39;d&#39;) for value in values]
+    returns.columns = col_names
+
+    #if the parameter rolling = False, returns the original data with the added rolling returns
+    if rolling == True:
+        df2 = df.merge(returns, how=&#39;left&#39;, left_index=True, right_index=True)
+        return df2
+
+    #if the parameter rolling = True, returns the total compound returns in the period, the number of days
+    # and the Compound Annual Growth Rate (CAGR)
+    elif rolling == False: 
+        returns = df[[group]].merge(returns, left_index = True, right_index = True)
+        
+        #calculates the compound returns
+        returns = returns.groupby(group, sort = False, as_index = True).apply(lambda x: np.prod(1+x) - 1)
+        
+        #calculates the number of days in the period
+        n_observations =  df.groupby(group, sort = False, as_index = True)[values[0]].count()
+        returns = returns.merge(n_observations, left_index = True, right_index = True)
+        
+        #renames the columns in the result set
+        col_names = [(value + &#39;_cum_return&#39;) for value in values]
+        col_names.append(&#39;days&#39;)
+        returns.columns = col_names
+        
+        #calculates the Compound Annual Growth Rate (CAGR)
+        values = col_names[:-1]        
+        col_names = [i.replace(&#39;_cum_return&#39;, &#39;_cagr&#39;) for i in values]
+        returns[col_names] = (returns.dropna()
+                                     .loc[:,values]
+                                     .apply(lambda x: ((x + 1)**(252/returns.days))-1))
+
+        return returns                                   
+
+    else: 
+        raise Exception(&#34;Wrong Parameter: rolling can only be True or False.&#34;) 
+        
+
+def cum_returns(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;]) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the cumulative % returns for the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed columns\n
+    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;)\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;])
+   
+    Returns:
+    pd.DataFrame: A pandas dataframe with the cumulative % returns for each asset
+
+   &#34;&#34;&#34;
+    returns_df = returns(df, group = group, values = values, rolling=True) #calculates  the daily returns
+    
+    #calculates the cumulative returns in each day for each group
+    cum_returns = returns_df.groupby(group)[[value + &#39;_return_1d&#39; for value in values]].expanding().apply(lambda x: np.prod(x+1)-1)
+    
+    #renames the columns
+    cum_returns.columns = [i + &#39;_cum_return&#39; for i in values]
+    cum_returns.reset_index(level = 0, inplace = True)
+
+    cum_returns = returns_df.merge(cum_returns, how = &#39;right&#39;, on = group, left_index = True, right_index = True)
+    return cum_returns
+
+
+def volatility(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA_return_1d&#39;], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 21) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: [&#39;asset_price&#39;, &#39;index price&#39;] \n
+    rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility\n
+    returns_frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility\n
+    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over
+
+    Returns:
+    pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows
+
+   &#34;&#34;&#34;
+    if rolling == False:
+        vol = df.copy(deep=True)
+        for col in values:
+            vol = df[df[col].notnull()]
+
+        vol = vol.groupby(group)[values].std(ddof=0) 
+        
+        #renames the columns
+        col_names = [(value + &#39;_vol&#39;) for value in values]        
+        vol.columns = col_names
+
+        #annualizes the volatility
+        vol[col_names]= vol[col_names].apply(lambda x : x *((252/returns_frequency)**0.5))
+        
+        return vol
+
+    elif rolling == True: 
+        vol = df.copy(deep=True)
+        for col in values:
+            vol = df[df[col].notnull()]
+        
+        vol = (vol.groupby(group)[values]
+                  .rolling(window_size)
+                  .std(ddof=0) #standards deviation in the rolling period
+                  .reset_index(level = 0)
+                )
+        #renames the columns
+        col_names = [(value + &#39;_vol_&#39; + str(window_size) + &#39;rw&#39;) for value in values]
+        col_names.insert(0, group)
+        vol.columns = col_names
+
+        #annualizes the volatility
+        col_names.remove(group)
+        vol[col_names]= vol[col_names].apply(lambda x : x *((252/returns_frequency)**0.5))
+
+        df2 = df.merge(vol.drop(columns = group),left_index=True,right_index=True)
+        return df2
+    
+    else: 
+        raise Exception(&#34;Wrong Parameter: rolling can only be True or False.&#34;)
+  
+
+def drawdown(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;])-&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the drawdown (the % the asset is down from its all-time-high) for givens assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices. Example: [&#39;asset_price&#39;, &#39;index price&#39;]\n
+   
+    Returns:
+    pd.DataFrame: The original pandas dataframe with added columns for the all time high and drawdown of the given assets
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    for value in values:
+        col = &#39;cum_max_&#39;+ value
+        df2[col] = df2.groupby([group])[[value]].cummax().to_numpy() 
+        df2[(&#39;drawdown_&#39;+ value)] = (df2[value]/df2[col])-1
+    return df2
+
+
+def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, group: str = &#39;CNPJ_FUNDO&#39;, rolling: bool = False, window_size: int = 252) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the correlation between assets and a given benchmark both in rolling windows or for the full available period
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    index_returns (str): name of the column in the dataframe with the benchmark returns\n
+    rolling (bool): True or False. Indicates if the function will return total correlation for each asset or rolling window correlations\n
+    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over
+
+    Returns:
+    pd.DataFrame: If rolling = False: Pandas dataframe with total correlation for the assets and their benchmarks. If rolling = True: The original pandas dataframe with an added column for the correlation in the rolling windows
+
+   &#34;&#34;&#34;
+    if rolling == False: 
+        #calculates the correlation between assests returns for the whole period
+        corr = df[df[asset_returns].notnull()].groupby([group])[[asset_returns,index_returns]].corr()
+        corr = corr.xs(index_returns,level = 1, drop_level=False)
+        corr = corr.reset_index(level = 1, drop = True)
+        corr = corr.drop(columns=[index_returns])
+        corr.columns=[&#39;correlation_benchmark&#39;]
+        return corr
+    elif rolling == True:  
+        #calculates the correlation between the assests returns across rolling windows     
+        corr = (df[df[asset_returns].notnull()].groupby(group)[[asset_returns,index_returns]]
+                                              .rolling(window_size)
+                                              .corr() 
+                                              .xs(index_returns,level = 2, drop_level=True) #drops reduntant level of the corr matrix
+                                              .reset_index(level = 0)
+                                              .drop(columns=[index_returns])
+                                              .rename(columns = {asset_returns:&#39;correlation_benchmark&#39;})
+                )
+        df2 = df.merge(corr.drop(columns = [group]),left_index=True,right_index=True)
+        return df2
+    else:
+        raise Exception(&#34;Wrong Parameter: rolling can only be True or False&#34;) 
+
+
+def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = &#39;correlation_benchmark&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_vol (str): name of the column in the dataframe with the assets volatilities\n
+    bench_vol (str): name of the column in the dataframe with the benchmark volatility\n
+    correlation (str): name of the column in the dataframe with the correlations between assets and their benchmarks
+
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the beta calculation
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    df2[&#39;beta&#39;] = (df2[asset_vol] / df2[bench_vol]) * df2[correlation]
+    return df2
+
+
+def alpha(df: pd.DataFrame, asset_returns: str, bench_returns: str, riskfree_returns: str, beta: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the alpha (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets
+
+    Parameters:
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    bench_returns (str): name of the column in the dataframe with the benchmark returns\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n
+    beta (str): name of the column in the dataframe with the assets betas
+
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the alpha calculation.
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    df2[&#39;alpha&#39;] = df2[asset_returns] - df2[riskfree_returns] - (df2[beta] * (df2[bench_returns] - df2[riskfree_returns]))
+    return df2
+
+
+def sharpe(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_vol: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the sharpe ratio (average return earned in excess of the risk-free rate per unit of volatility) of the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n 
+    asset_vol (str): name of the column in the dataframe with the assets volatilities
+
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the sharpe calculation
+
+   &#34;&#34;&#34;
+
+    df2 = df.copy(deep = True)
+    df2[&#39;sharpe&#39;] = (df2[asset_returns] - df2[riskfree_returns]) / df2[asset_vol]
+    return df2
+
+
+def sortino(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_negative_vol: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the sortino ratio (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n
+    asset_negative_vol (str): name of the column in the dataframe with the assets downside volatilities (volatility of only negative returns)
+    
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the sortino calculation.
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    df2[&#39;sortino&#39;] = (df2[asset_returns] - df2[riskfree_returns]) / df2[asset_negative_vol]
+    return df2
+
+
+def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, returns_frequency: int, group: str = &#39;CNPJ_FUNDO&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the capture ratios (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    bench_returns (str): name of the column in the dataframe with the benchmark returns\n
+    returns_frequency: (int): Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks)\n 
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;
+    
+    Returns:
+    pd.DataFrame: The original pandas dataframe with added columns for the capture ratios (bull, bear and ratio bull/bear)
+
+   &#34;&#34;&#34;   
+
+    df_bull = df[(df[asset_returns].notnull()) &amp; (df[bench_returns].notnull())].copy(deep = True)
+    df_bear = df[(df[asset_returns].notnull()) &amp; (df[bench_returns].notnull())].copy(deep = True)
+
+    df_bull = df_bull[df_bull[bench_returns] &gt; 0] #dataframe with only positive returns from the benchmark
+    df_bear = df_bear[df_bear[bench_returns] &lt;= 0] #dataframe with only negative returns from the benchmark
+
+    tables = [df_bull, df_bear]
+    for i in range(len(tables)): #performs set of operations in each table
+        #calculates total returns + 1
+        compound = tables[i].groupby(group)[[asset_returns,bench_returns]].apply(lambda x: np.prod(1+x))
+        
+        #counts number of periods
+        nperiods = tables[i].groupby(group)[[asset_returns]].count().rename(columns = {asset_returns:&#39;n_periods&#39;})
+
+        tables[i] = compound.merge(nperiods, on = group, how  =&#39;left&#39;)#joins tables defined above
+
+        #calculates the annualized returns (CAGR)
+        tables[i][asset_returns]=(tables[i][asset_returns]**((252/returns_frequency)/tables[i][&#39;n_periods&#39;]))-1
+        tables[i][bench_returns]=(tables[i][bench_returns]**((252/returns_frequency)/tables[i][&#39;n_periods&#39;]))-1
+
+        tables[i][&#39;capture&#39;] = tables[i][asset_returns]/tables[i][bench_returns] #calculates the capture
+
+    df2 = tables[1].merge(tables[0], on = group, how  =&#39;left&#39;,suffixes=(&#39;_bear&#39;,&#39;_bull&#39;))
+    df2[&#39;capture_ratio&#39;] = df2[&#39;capture_bull&#39;]/df2[&#39;capture_bear&#39;]
+    return df2</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="fundspy.alpha"><code class="name flex">
+<span>def <span class="ident">alpha</span></span>(<span>df: pandas.core.frame.DataFrame, asset_returns: str, bench_returns: str, riskfree_returns: str, beta: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the alpha (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets</p>
+<p>Parameters:
+df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>asset_returns (str): name of the column in the dataframe with the assets returns</p>
+<p>bench_returns (str): name of the column in the dataframe with the benchmark returns</p>
+<p>riskfree_returns (str): name of the column in the dataframe with the risk free rate returns</p>
+<p>beta (str): name of the column in the dataframe with the assets betas</p>
+<p>Returns:
+pd.DataFrame: The original pandas dataframe with an added column for the alpha calculation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def alpha(df: pd.DataFrame, asset_returns: str, bench_returns: str, riskfree_returns: str, beta: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the alpha (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets
+
+    Parameters:
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    bench_returns (str): name of the column in the dataframe with the benchmark returns\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n
+    beta (str): name of the column in the dataframe with the assets betas
+
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the alpha calculation.
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    df2[&#39;alpha&#39;] = df2[asset_returns] - df2[riskfree_returns] - (df2[beta] * (df2[bench_returns] - df2[riskfree_returns]))
+    return df2</code></pre>
+</details>
+</dd>
+<dt id="fundspy.beta"><code class="name flex">
+<span>def <span class="ident">beta</span></span>(<span>df: pandas.core.frame.DataFrame, asset_vol: str, bench_vol: str, correlation: str = 'correlation_benchmark') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>asset_vol (str): name of the column in the dataframe with the assets volatilities</p>
+<p>bench_vol (str): name of the column in the dataframe with the benchmark volatility</p>
+<p>correlation (str): name of the column in the dataframe with the correlations between assets and their benchmarks</p>
+<p>Returns:
+pd.DataFrame: The original pandas dataframe with an added column for the beta calculation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = &#39;correlation_benchmark&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_vol (str): name of the column in the dataframe with the assets volatilities\n
+    bench_vol (str): name of the column in the dataframe with the benchmark volatility\n
+    correlation (str): name of the column in the dataframe with the correlations between assets and their benchmarks
+
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the beta calculation
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    df2[&#39;beta&#39;] = (df2[asset_vol] / df2[bench_vol]) * df2[correlation]
+    return df2</code></pre>
+</details>
+</dd>
+<dt id="fundspy.capture_ratio"><code class="name flex">
+<span>def <span class="ident">capture_ratio</span></span>(<span>df: pandas.core.frame.DataFrame, asset_returns: str, bench_returns: str, returns_frequency: int, group: str = 'CNPJ_FUNDO') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the capture ratios (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>asset_returns (str): name of the column in the dataframe with the assets returns</p>
+<p>bench_returns (str): name of the column in the dataframe with the benchmark returns</p>
+<p>returns_frequency: (int): Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks)</p>
+<p>group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'</p>
+<p>Returns:
+pd.DataFrame: The original pandas dataframe with added columns for the capture ratios (bull, bear and ratio bull/bear)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, returns_frequency: int, group: str = &#39;CNPJ_FUNDO&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the capture ratios (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    bench_returns (str): name of the column in the dataframe with the benchmark returns\n
+    returns_frequency: (int): Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks)\n 
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;
+    
+    Returns:
+    pd.DataFrame: The original pandas dataframe with added columns for the capture ratios (bull, bear and ratio bull/bear)
+
+   &#34;&#34;&#34;   
+
+    df_bull = df[(df[asset_returns].notnull()) &amp; (df[bench_returns].notnull())].copy(deep = True)
+    df_bear = df[(df[asset_returns].notnull()) &amp; (df[bench_returns].notnull())].copy(deep = True)
+
+    df_bull = df_bull[df_bull[bench_returns] &gt; 0] #dataframe with only positive returns from the benchmark
+    df_bear = df_bear[df_bear[bench_returns] &lt;= 0] #dataframe with only negative returns from the benchmark
+
+    tables = [df_bull, df_bear]
+    for i in range(len(tables)): #performs set of operations in each table
+        #calculates total returns + 1
+        compound = tables[i].groupby(group)[[asset_returns,bench_returns]].apply(lambda x: np.prod(1+x))
+        
+        #counts number of periods
+        nperiods = tables[i].groupby(group)[[asset_returns]].count().rename(columns = {asset_returns:&#39;n_periods&#39;})
+
+        tables[i] = compound.merge(nperiods, on = group, how  =&#39;left&#39;)#joins tables defined above
+
+        #calculates the annualized returns (CAGR)
+        tables[i][asset_returns]=(tables[i][asset_returns]**((252/returns_frequency)/tables[i][&#39;n_periods&#39;]))-1
+        tables[i][bench_returns]=(tables[i][bench_returns]**((252/returns_frequency)/tables[i][&#39;n_periods&#39;]))-1
+
+        tables[i][&#39;capture&#39;] = tables[i][asset_returns]/tables[i][bench_returns] #calculates the capture
+
+    df2 = tables[1].merge(tables[0], on = group, how  =&#39;left&#39;,suffixes=(&#39;_bear&#39;,&#39;_bull&#39;))
+    df2[&#39;capture_ratio&#39;] = df2[&#39;capture_bull&#39;]/df2[&#39;capture_bear&#39;]
+    return df2</code></pre>
+</details>
+</dd>
+<dt id="fundspy.corr_benchmark"><code class="name flex">
+<span>def <span class="ident">corr_benchmark</span></span>(<span>df: pandas.core.frame.DataFrame, asset_returns: str, index_returns: str, group: str = 'CNPJ_FUNDO', rolling: bool = False, window_size: int = 252) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the correlation between assets and a given benchmark both in rolling windows or for the full available period</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'</p>
+<p>asset_returns (str): name of the column in the dataframe with the assets returns</p>
+<p>index_returns (str): name of the column in the dataframe with the benchmark returns</p>
+<p>rolling (bool): True or False. Indicates if the function will return total correlation for each asset or rolling window correlations</p>
+<p>window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over</p>
+<p>Returns:
+pd.DataFrame: If rolling = False: Pandas dataframe with total correlation for the assets and their benchmarks. If rolling = True: The original pandas dataframe with an added column for the correlation in the rolling windows</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, group: str = &#39;CNPJ_FUNDO&#39;, rolling: bool = False, window_size: int = 252) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the correlation between assets and a given benchmark both in rolling windows or for the full available period
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    index_returns (str): name of the column in the dataframe with the benchmark returns\n
+    rolling (bool): True or False. Indicates if the function will return total correlation for each asset or rolling window correlations\n
+    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over
+
+    Returns:
+    pd.DataFrame: If rolling = False: Pandas dataframe with total correlation for the assets and their benchmarks. If rolling = True: The original pandas dataframe with an added column for the correlation in the rolling windows
+
+   &#34;&#34;&#34;
+    if rolling == False: 
+        #calculates the correlation between assests returns for the whole period
+        corr = df[df[asset_returns].notnull()].groupby([group])[[asset_returns,index_returns]].corr()
+        corr = corr.xs(index_returns,level = 1, drop_level=False)
+        corr = corr.reset_index(level = 1, drop = True)
+        corr = corr.drop(columns=[index_returns])
+        corr.columns=[&#39;correlation_benchmark&#39;]
+        return corr
+    elif rolling == True:  
+        #calculates the correlation between the assests returns across rolling windows     
+        corr = (df[df[asset_returns].notnull()].groupby(group)[[asset_returns,index_returns]]
+                                              .rolling(window_size)
+                                              .corr() 
+                                              .xs(index_returns,level = 2, drop_level=True) #drops reduntant level of the corr matrix
+                                              .reset_index(level = 0)
+                                              .drop(columns=[index_returns])
+                                              .rename(columns = {asset_returns:&#39;correlation_benchmark&#39;})
+                )
+        df2 = df.merge(corr.drop(columns = [group]),left_index=True,right_index=True)
+        return df2
+    else:
+        raise Exception(&#34;Wrong Parameter: rolling can only be True or False&#34;) </code></pre>
+</details>
+</dd>
+<dt id="fundspy.cum_returns"><code class="name flex">
+<span>def <span class="ident">cum_returns</span></span>(<span>df: pandas.core.frame.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA']) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the cumulative % returns for the given assets</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed columns</p>
+<p>group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code')</p>
+<p>values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price'])</p>
+<p>Returns:
+pd.DataFrame: A pandas dataframe with the cumulative % returns for each asset</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cum_returns(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;]) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the cumulative % returns for the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed columns\n
+    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;)\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;])
+   
+    Returns:
+    pd.DataFrame: A pandas dataframe with the cumulative % returns for each asset
+
+   &#34;&#34;&#34;
+    returns_df = returns(df, group = group, values = values, rolling=True) #calculates  the daily returns
+    
+    #calculates the cumulative returns in each day for each group
+    cum_returns = returns_df.groupby(group)[[value + &#39;_return_1d&#39; for value in values]].expanding().apply(lambda x: np.prod(x+1)-1)
+    
+    #renames the columns
+    cum_returns.columns = [i + &#39;_cum_return&#39; for i in values]
+    cum_returns.reset_index(level = 0, inplace = True)
+
+    cum_returns = returns_df.merge(cum_returns, how = &#39;right&#39;, on = group, left_index = True, right_index = True)
+    return cum_returns</code></pre>
+</details>
+</dd>
+<dt id="fundspy.cvm_informes"><code class="name flex">
+<span>def <span class="ident">cvm_informes</span></span>(<span>year: int, mth: int) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Downloads the daily report (informe diario) from CVM for a given month and year</p>
+<p>Parameters:</p>
+<p>year (int): The year of the report the function should download</p>
+<p>mth (int): The month of the report the function should download</p>
+<p>Returns:
+pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2017, will contain data regarding the whole year</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cvm_informes (year: int, mth: int) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Downloads the daily report (informe diario) from CVM for a given month and year
+
+    Parameters:\n
+    year (int): The year of the report the function should download\n
+    mth (int): The month of the report the function should download
+
+    Returns:
+    pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2017, will contain data regarding the whole year
+
+   &#34;&#34;&#34;
+
+    if int(year) &gt;= 2017: #utiliza a estrutura de download para dados a partir de 2017
+        try:
+            mth = f&#34;{mth:02d}&#34;
+            year = str(year)
+            #criamos a url a partis dos parametros passados para a funcao
+            url = &#39;http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_&#39;+year+mth+&#39;.csv&#39;
+            
+            #lemos o arquivo csv retornado pelo link
+            cotas = pd.read_csv(url, sep =&#39;;&#39;)
+            cotas[&#39;DT_COMPTC&#39;] = pd.to_datetime(cotas[&#39;DT_COMPTC&#39;]) #define tipo datetime para coluna de data
+            
+            try:
+                #remove coluna que aparece apenas em certos arquivos para evitar inconsistencias
+                cotas.drop(columns = [&#39;TP_FUNDO&#39;], inplace = True)
+            except:
+                pass
+            
+            return cotas
+        except:
+            print(&#39;theres no report for this date yet!.\n&#39;)
+    
+    if int(year) &lt; 2017:
+        try:
+            year = str(year)
+
+            url = &#39;http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/inf_diario_fi_&#39; + year + &#39;.zip&#39;
+            #envia requests para a url
+            r = requests.get(url, stream=True, verify=False, allow_redirects=True)
+            
+            with open(&#39;informe&#39; + year + &#39;.zip&#39;, &#39;wb&#39;) as fd: #salva arquivo .zip
+                fd.write(r.content)
+
+            zip_inf = zipfile.ZipFile(&#39;informe&#39; + year + &#39;.zip&#39;) #abre arquivo .zip
+            
+            #le os arquivos csv dentro do arquivo zip
+            informes = [pd.read_csv(zip_inf.open(f), sep=&#34;;&#34;) for f in zip_inf.namelist()] 
+            cotas = pd.concat(informes,ignore_index=True)
+            
+            cotas[&#39;DT_COMPTC&#39;] = pd.to_datetime(cotas[&#39;DT_COMPTC&#39;]) #define tipo datetime para coluna de data
+
+            zip_inf.close() #fecha o arquivo zip
+            os.remove(&#39;informe&#39; + year + &#39;.zip&#39;) #apaga o arquivo zip
+            
+            return cotas
+        
+        except Exception as E:
+            print(E)           </code></pre>
+</details>
+</dd>
+<dt id="fundspy.drawdown"><code class="name flex">
+<span>def <span class="ident">drawdown</span></span>(<span>df: pandas.core.frame.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA']) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the drawdown (the % the asset is down from its all-time-high) for givens assets</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'</p>
+<p>values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices. Example: ['asset_price', 'index price']</p>
+<p>Returns:
+pd.DataFrame: The original pandas dataframe with added columns for the all time high and drawdown of the given assets</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def drawdown(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;])-&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the drawdown (the % the asset is down from its all-time-high) for givens assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices. Example: [&#39;asset_price&#39;, &#39;index price&#39;]\n
+   
+    Returns:
+    pd.DataFrame: The original pandas dataframe with added columns for the all time high and drawdown of the given assets
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    for value in values:
+        col = &#39;cum_max_&#39;+ value
+        df2[col] = df2.groupby([group])[[value]].cummax().to_numpy() 
+        df2[(&#39;drawdown_&#39;+ value)] = (df2[value]/df2[col])-1
+    return df2</code></pre>
+</details>
+</dd>
+<dt id="fundspy.returns"><code class="name flex">
+<span>def <span class="ident">returns</span></span>(<span>df: pandas.core.frame.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'], rolling: bool = False, window_size: int = 1) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)</p>
+<p>Parameters:
+df (pd.DataFrame): Pandas dataframe with the needed columns</p>
+<p>group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code')</p>
+<p>values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price'])</p>
+<p>rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns</p>
+<p>window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over</p>
+<p>Returns:
+pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def returns(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;], rolling: bool = False, window_size: int = 1) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)
+
+    Parameters:
+    df (pd.DataFrame): Pandas dataframe with the needed columns\n
+    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;)\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;])\n
+    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns\n
+    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over
+
+    Returns:
+    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows
+
+   &#34;&#34;&#34;
+    if rolling == False:
+        window_size = 1
+
+    #garantees that the values are positive, once division by zero returns infinite
+    returns = df.copy(deep=True)
+    for col in values:
+        returns = returns[returns[col]&gt;0]
+    returns.loc[:, values] = returns.loc[:, values].fillna(method = &#39;backfill&#39;)
+
+    #calculates the percentual change in the rolling windows specified for each group
+    returns = returns.groupby(group, sort = False, as_index = True)[values].apply(lambda x: x.pct_change(window_size))
+    
+    #renames the columns
+    col_names = [(value + &#39;_return_&#39; + str(window_size) + &#39;d&#39;) for value in values]
+    returns.columns = col_names
+
+    #if the parameter rolling = False, returns the original data with the added rolling returns
+    if rolling == True:
+        df2 = df.merge(returns, how=&#39;left&#39;, left_index=True, right_index=True)
+        return df2
+
+    #if the parameter rolling = True, returns the total compound returns in the period, the number of days
+    # and the Compound Annual Growth Rate (CAGR)
+    elif rolling == False: 
+        returns = df[[group]].merge(returns, left_index = True, right_index = True)
+        
+        #calculates the compound returns
+        returns = returns.groupby(group, sort = False, as_index = True).apply(lambda x: np.prod(1+x) - 1)
+        
+        #calculates the number of days in the period
+        n_observations =  df.groupby(group, sort = False, as_index = True)[values[0]].count()
+        returns = returns.merge(n_observations, left_index = True, right_index = True)
+        
+        #renames the columns in the result set
+        col_names = [(value + &#39;_cum_return&#39;) for value in values]
+        col_names.append(&#39;days&#39;)
+        returns.columns = col_names
+        
+        #calculates the Compound Annual Growth Rate (CAGR)
+        values = col_names[:-1]        
+        col_names = [i.replace(&#39;_cum_return&#39;, &#39;_cagr&#39;) for i in values]
+        returns[col_names] = (returns.dropna()
+                                     .loc[:,values]
+                                     .apply(lambda x: ((x + 1)**(252/returns.days))-1))
+
+        return returns                                   
+
+    else: 
+        raise Exception(&#34;Wrong Parameter: rolling can only be True or False.&#34;) </code></pre>
+</details>
+</dd>
+<dt id="fundspy.sharpe"><code class="name flex">
+<span>def <span class="ident">sharpe</span></span>(<span>df: pandas.core.frame.DataFrame, asset_returns: str, riskfree_returns: str, asset_vol: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the sharpe ratio (average return earned in excess of the risk-free rate per unit of volatility) of the given assets</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>asset_returns (str): name of the column in the dataframe with the assets returns</p>
+<p>riskfree_returns (str): name of the column in the dataframe with the risk free rate returns</p>
+<p>asset_vol (str): name of the column in the dataframe with the assets volatilities</p>
+<p>Returns:
+pd.DataFrame: The original pandas dataframe with an added column for the sharpe calculation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sharpe(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_vol: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the sharpe ratio (average return earned in excess of the risk-free rate per unit of volatility) of the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n 
+    asset_vol (str): name of the column in the dataframe with the assets volatilities
+
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the sharpe calculation
+
+   &#34;&#34;&#34;
+
+    df2 = df.copy(deep = True)
+    df2[&#39;sharpe&#39;] = (df2[asset_returns] - df2[riskfree_returns]) / df2[asset_vol]
+    return df2</code></pre>
+</details>
+</dd>
+<dt id="fundspy.sortino"><code class="name flex">
+<span>def <span class="ident">sortino</span></span>(<span>df: pandas.core.frame.DataFrame, asset_returns: str, riskfree_returns: str, asset_negative_vol: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the sortino ratio (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>asset_returns (str): name of the column in the dataframe with the assets returns</p>
+<p>riskfree_returns (str): name of the column in the dataframe with the risk free rate returns</p>
+<p>asset_negative_vol (str): name of the column in the dataframe with the assets downside volatilities (volatility of only negative returns)</p>
+<p>Returns:
+pd.DataFrame: The original pandas dataframe with an added column for the sortino calculation.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sortino(df: pd.DataFrame, asset_returns: str, riskfree_returns: str, asset_negative_vol: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the sortino ratio (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    asset_returns (str): name of the column in the dataframe with the assets returns\n
+    riskfree_returns (str): name of the column in the dataframe with the risk free rate returns\n
+    asset_negative_vol (str): name of the column in the dataframe with the assets downside volatilities (volatility of only negative returns)
+    
+    Returns:
+    pd.DataFrame: The original pandas dataframe with an added column for the sortino calculation.
+
+   &#34;&#34;&#34;
+    df2 = df.copy(deep = True)
+    df2[&#39;sortino&#39;] = (df2[asset_returns] - df2[riskfree_returns]) / df2[asset_negative_vol]
+    return df2</code></pre>
+</details>
+</dd>
+<dt id="fundspy.start_db"><code class="name flex">
+<span>def <span class="ident">start_db</span></span>(<span>db_dir: str = 'investments_database.db', start_year: int = 2005, target_funds: list = [])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Starts a SQLite database with 3 tables: daily_quotas (funds data), ibov_returns (ibovespa index data) and selic_rates (the base interest rate for the brazilian economy) </p>
+<p>Parameters:</p>
+<p>db_dir (str): The path of the dabatabse file to be created. Defaults to 'investments_database.db', creating the file in the current working directory</p>
+<p>start_year (int): Opitional (Defaults to 2005). Starting year for the data collection. . Can be use to reduce the size of the database</p>
+<p>target_funds (list): Opitional (Defaults to []). List of target funds CNPJs. Only funds with CNPJs contained in this list will be included in the database. Can be used to radically reduce the size of the database. If none is specified, all funds will be included</p>
+<p>Returns:
+Theres no return from the function</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def start_db(db_dir: str = &#39;investments_database.db&#39;, start_year: int = 2005, target_funds: list = []):
+    &#34;&#34;&#34;Starts a SQLite database with 3 tables: daily_quotas (funds data), ibov_returns (ibovespa index data) and selic_rates (the base interest rate for the brazilian economy) 
+
+    Parameters:\n
+    db_dir (str): The path of the dabatabse file to be created. Defaults to &#39;investments_database.db&#39;, creating the file in the current working directory\n
+    start_year (int): Opitional (Defaults to 2005). Starting year for the data collection. . Can be use to reduce the size of the database\n
+    target_funds (list): Opitional (Defaults to []). List of target funds CNPJs. Only funds with CNPJs contained in this list will be included in the database. Can be used to radically reduce the size of the database. If none is specified, all funds will be included
+
+    Returns:
+    Theres no return from the function
+
+   &#34;&#34;&#34;
+    ##STEP 1:
+    #starts the new database
+    print (f&#39;creating SQLite database: {db_dir} \n&#39;)
+    con = sqlite3.connect(db_dir)
+
+
+    ##STEP 2:
+    #downloads each report in the cvm website and pushes it to the sql database daily_quotas table
+    print(&#39;downloading daily reports from the CVM website... \n&#39;)
+
+    #for each year between 2017 and now
+    for year in tqdm(range(start_year, datetime.date.today().year + 1), position = 0, leave=True): 
+        for mth in range(1, 13): #for each month
+            #loop structure for years equal or after 2017
+            if year&gt;=2017: 
+                informe = cvm_informes(str(year), mth)
+
+                try:
+                    if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                        informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
+                    #appends information to the sql database
+                    informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
+                except:
+                    pass
+            
+            elif year&lt;2017: #loop structure to handle years before 2017 (they have a different file structure)
+                #only executes the download function once every year to avoid duplicates (unique file for each year)       
+                if mth == 12:
+                    informe = cvm_informes(str(year), mth)
+
+                    try:
+                        if target_funds: #if the target funds list is not empty, uses it to filter the result set
+                            informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
+                        #appends information to the sql database
+                        informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
+                    except:
+                        pass
+
+
+    ##STEP 3:                    
+    #creates index in the daily_quotas table to make future select queries faster. 
+    #tradeoff: The updating proceesses of the database will be slower.
+    print(&#39;creating sql index on &#34;CNPJ_FUNDO&#34;, &#34;DT_COMPTC&#34; ... \n&#39;)
+    index = &#39;&#39;&#39;
+    CREATE INDEX &#34;cnpj_date&#34; ON &#34;daily_quotas&#34; (
+        &#34;CNPJ_FUNDO&#34; ASC,
+        &#34;DT_COMPTC&#34; ASC
+    )&#39;&#39;&#39;
+
+    cursor = con.cursor()
+    cursor.execute(index)
+    con.commit()
+
+    cursor.close()
+
+    
+    ##STEP 4:
+    #downloads cadastral information from CVM of the fundos and pushes it to the database
+    print(&#39;downloading cadastral information from cvm...\n&#39;)
+    info_cad = pd.read_csv(&#39;http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv&#39;, sep = &#39;;&#39;, encoding=&#39;latin1&#39;,
+                           dtype = {&#39;RENTAB_FUNDO&#39;: object,&#39;FUNDO_EXCLUSIVO&#39;: object, &#39;TRIB_LPRAZO&#39;: object, &#39;ENTID_INVEST&#39;: object,
+                                    &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
+                                    &#39;CONTROLADOR&#39;: object}
+                            )
+    info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, index=False)
+
+
+    ##STEP 5:
+    #downloads daily ibovespa prices from investing.com and pushes it to the database
+    print(&#39;downloading ibovespa index prices from investing.com ...\n&#39;)
+    ibov = investpy.get_etf_historical_data(etf=&#39;Ishares Ibovespa&#39;, 
+                                        country=&#39;brazil&#39;,
+                                        from_date=&#39;01/01/2005&#39;,
+                                        to_date=datetime.date.today().strftime(&#39;%d/%m/%Y&#39;))
+    ibov.to_sql(&#39;ibov_returns&#39;, con, index=True) 
+
+
+    ##STEP 6:
+    #downloads daily selic returns (basic interest rate of the brazilian economy) 
+    #from the brazillian central bank and pushes it to the database
+    print(&#39;downloading selic rates from the Brazilian Central Bank website...\n&#39;)
+    selic = pd.read_json(&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json&#39;.format(11))
+    selic[&#39;data&#39;] = pd.to_datetime(selic[&#39;data&#39;], format = &#39;%d/%m/%Y&#39;)
+    selic[&#39;valor&#39;] = selic[&#39;valor&#39;]/100 #calculates decimal rate from the percentual value
+
+    #calculates asset &#34;price&#34; considering day 0 price as 1
+    selic.loc[0,&#39;price&#39;] = 1 * (1 + selic.loc[0,&#39;valor&#39;])
+    for i in range(1, len(selic)):
+        selic.loc[i, &#39;price&#39;] = selic.loc[i-1, &#39;price&#39;] * (1 + selic.loc[i,&#39;valor&#39;])
+
+    selic.rename(columns = {&#39;data&#39;:&#39;date&#39;, &#39;valor&#39;:&#39;rate&#39;}, inplace = True)
+    selic.to_sql(&#39;selic_rates&#39;, con , index=False)  
+
+
+    ##STEP 7:
+    #creates a table with a log of the execution timestamps of the script
+    print(&#39;creating the log table...\n&#39;)
+    update_log = pd.DataFrame({&#39;date&#39;:[datetime.datetime.now()], &#39;log&#39;:[1]})
+    update_log.to_sql(&#39;update_log&#39;, con, if_exists = &#39;append&#39;, index=False)
+
+
+    ##STEP 8
+    #closes the connection with the database
+    con.close()
+    print(&#39;connection with the database closed! \n&#39;)
+
+    print(f&#39;Success: database created in {db_dir} !\n&#39;)</code></pre>
+</details>
+</dd>
+<dt id="fundspy.update_db"><code class="name flex">
+<span>def <span class="ident">update_db</span></span>(<span>db_dir: str = 'investments_database.db')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Updates the database</p>
+<p>Parameters:</p>
+<p>db_dir (str): The path of the dabatabse file to be updated. Defaults to 'investments_database.db'</p>
+<p>Returns:
+Theres no return from the function</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def update_db(db_dir: str = r&#39;investments_database.db&#39;):
+    &#34;&#34;&#34;Updates the database
+
+    Parameters:\n
+    db_dir (str): The path of the dabatabse file to be updated. Defaults to &#39;investments_database.db&#39;
+
+    Returns:
+    Theres no return from the function
+
+   &#34;&#34;&#34;
+    ##STEP 1
+    #connects to the database
+    print(f&#39;connected with the database {db_dir}\n&#39;)
+    con = sqlite3.connect(db_dir)
+
+
+    ##STEP 2
+    #calculates relevant date limits to the update process
+    Cal=Brazil() #inicializes the brazillian calendar
+    today = datetime.date.today()
+
+    #queries the last update from the log table
+    last_update = pd.to_datetime(pd.read_sql(&#39;select MAX(date) from update_log&#39;, con).iloc[0,0])
+
+    last_quota = Cal.sub_working_days(last_update, 2) #date of the last published cvm repport
+    num_months = (today.year - last_quota.year) * 12 + (today.month - last_quota.month) + 1
+
+
+    ##STEP 3
+    #delete information that will be updated from the database tables
+    print(&#39;deleting redundant data from the database... \n&#39;)
+    tables = {&#39;daily_quotas&#39; : [&#39;DT_COMPTC&#39;,last_quota.strftime(&#34;%Y-%m-01&#34;)],
+              &#39;ibov_returns&#39; : [&#39;Date&#39;,last_update.strftime(&#34;%Y-%m-%d&#34;)]}
+    for i in tables:
+        #sql delete statement to the database
+        delete = f&#39;&#39;&#39;
+        delete
+        from {i}
+        where {tables[i][0]} &gt;= &#34;{tables[i][1]}&#34;
+        &#39;&#39;&#39;
+        
+        cursor = con.cursor()
+        cursor.execute(delete)
+        con.commit()
+        
+    cursor.close()
+
+
+    ##STEP 4
+    #Pulls new data from CVM, investpy and the brazilian central bank
+    #and pushes it to the database
+    
+    print(&#39;downloading new daily reports from the CVM website...\n&#39;)
+    # downloads the daily cvm repport for each month between the last update and today
+    for m in range(num_months+1): 
+        data_alvo = last_quota + relativedelta(months=+m) 
+        informe = cvm_informes(data_alvo.year, data_alvo.month)        
+        try:
+            informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
+        except:
+            pass 
+
+    #downloads cadastral information from CVM of the fundos and pushes it to the database
+    print(&#39;downloading updated cadastral information from cvm...\n&#39;)
+    info_cad = pd.read_csv(&#39;http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv&#39;, sep = &#39;;&#39;, encoding=&#39;latin1&#39;,
+                           dtype = {&#39;RENTAB_FUNDO&#39;: object,&#39;FUNDO_EXCLUSIVO&#39;: object, &#39;TRIB_LPRAZO&#39;: object, &#39;ENTID_INVEST&#39;: object,
+                                    &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
+                                    &#39;CONTROLADOR&#39;: object}
+                            )
+    info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, if_exists=&#39;replace&#39;, index=False)
+
+    #updates daily interest returns (selic)
+    print(&#39;updating selic rates...\n&#39;)
+    selic = pd.read_json(&#39;http://api.bcb.gov.br/dados/serie/bcdata.sgs.{}/dados?formato=json&#39;.format(11))
+    selic[&#39;data&#39;] = pd.to_datetime(selic[&#39;data&#39;], format = &#39;%d/%m/%Y&#39;)
+    selic[&#39;valor&#39;] = selic[&#39;valor&#39;]/100 #calculates decimal rate from the percentual value
+
+    #calculates asset &#34;price&#34; considering day 0 price as 1
+    selic.loc[0,&#39;price&#39;] = 1 * (1 + selic.loc[0,&#39;valor&#39;])
+    for i in range(1, len(selic)):
+        selic.loc[i, &#39;price&#39;] = selic.loc[i-1, &#39;price&#39;] * (1 + selic.loc[i,&#39;valor&#39;])
+
+    selic.rename(columns = {&#39;data&#39;:&#39;date&#39;, &#39;valor&#39;:&#39;rate&#39;}, inplace = True)
+
+    #filters only new data
+    selic = selic[selic.date&gt;=(last_update + datetime.timedelta(-1))]
+    selic.to_sql(&#39;selic_rates&#39;, con , if_exists = &#39;append&#39;, index=False) 
+
+    #updates ibovespa data
+    print(&#39;updating ibovespa returns...\n&#39;)
+    try:
+        ibov = investpy.get_etf_historical_data(etf=&#39;Ishares Ibovespa&#39;, 
+                                                country=&#39;brazil&#39;,
+                                                from_date=last_update.strftime(&#39;%d/%m/%Y&#39;),
+                                                to_date=datetime.date.today().strftime(&#39;%d/%m/%Y&#39;))
+        ibov.to_sql(&#39;ibov_returns&#39;, con , if_exists = &#39;append&#39;, index=False)
+    except:
+        pass
+
+
+    ##STEP 5
+    #updates the log in the database
+    print(&#39;updating the log...\n&#39;)
+    update_log = pd.DataFrame({&#39;date&#39;:[datetime.datetime.now()], &#39;log&#39;:[1]})
+    update_log.to_sql(&#39;update_log&#39;, con, if_exists = &#39;append&#39;, index=False)
+
+
+    ##STEP 6
+    #closes the connection with the database
+    con.close()
+    print(&#39;connection with the database closed!\n&#39;)
+
+    print(f&#39;database {db_dir} updated!\n&#39;)</code></pre>
+</details>
+</dd>
+<dt id="fundspy.volatility"><code class="name flex">
+<span>def <span class="ident">volatility</span></span>(<span>df: pandas.core.frame.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA_return_1d'], rolling: bool = False, returns_frequency: int = 1, window_size: int = 21) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Calculates the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period</p>
+<p>Parameters:</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed data</p>
+<p>group (str): name of the column in the dataframe used to group values. Example: 'stock_ticker' or 'fund_code'</p>
+<p>values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: ['asset_price', 'index price'] </p>
+<p>rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility</p>
+<p>returns_frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility</p>
+<p>window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over</p>
+<p>Returns:
+pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def volatility(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA_return_1d&#39;], rolling: bool = False ,returns_frequency: int = 1, window_size: int = 21) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;Calculates the annualized volatillity (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period
+
+    Parameters:\n
+    df (pd.DataFrame): Pandas dataframe with the needed data\n
+    group (str): name of the column in the dataframe used to group values. Example: &#39;stock_ticker&#39; or &#39;fund_code&#39;\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark returns. Example: [&#39;asset_price&#39;, &#39;index price&#39;] \n
+    rolling (bool): True or False. Indicates if the function will return total volatility for each asset or rolling window volatility\n
+    returns_frequency: (int): Default = 1. Indicates the frequency in days of the given returns. Should be in tradable days (252 days a year, 21 a month, 5 a week for stocks). This number is used to anualize the volatility\n
+    window_size: (int): Default = 252. Only useful if rolling = True. Defines the size of the rolling window wich the volatility will be calculated over
+
+    Returns:
+    pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows
+
+   &#34;&#34;&#34;
+    if rolling == False:
+        vol = df.copy(deep=True)
+        for col in values:
+            vol = df[df[col].notnull()]
+
+        vol = vol.groupby(group)[values].std(ddof=0) 
+        
+        #renames the columns
+        col_names = [(value + &#39;_vol&#39;) for value in values]        
+        vol.columns = col_names
+
+        #annualizes the volatility
+        vol[col_names]= vol[col_names].apply(lambda x : x *((252/returns_frequency)**0.5))
+        
+        return vol
+
+    elif rolling == True: 
+        vol = df.copy(deep=True)
+        for col in values:
+            vol = df[df[col].notnull()]
+        
+        vol = (vol.groupby(group)[values]
+                  .rolling(window_size)
+                  .std(ddof=0) #standards deviation in the rolling period
+                  .reset_index(level = 0)
+                )
+        #renames the columns
+        col_names = [(value + &#39;_vol_&#39; + str(window_size) + &#39;rw&#39;) for value in values]
+        col_names.insert(0, group)
+        vol.columns = col_names
+
+        #annualizes the volatility
+        col_names.remove(group)
+        vol[col_names]= vol[col_names].apply(lambda x : x *((252/returns_frequency)**0.5))
+
+        df2 = df.merge(vol.drop(columns = group),left_index=True,right_index=True)
+        return df2
+    
+    else: 
+        raise Exception(&#34;Wrong Parameter: rolling can only be True or False.&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="fundspy.alpha" href="#fundspy.alpha">alpha</a></code></li>
+<li><code><a title="fundspy.beta" href="#fundspy.beta">beta</a></code></li>
+<li><code><a title="fundspy.capture_ratio" href="#fundspy.capture_ratio">capture_ratio</a></code></li>
+<li><code><a title="fundspy.corr_benchmark" href="#fundspy.corr_benchmark">corr_benchmark</a></code></li>
+<li><code><a title="fundspy.cum_returns" href="#fundspy.cum_returns">cum_returns</a></code></li>
+<li><code><a title="fundspy.cvm_informes" href="#fundspy.cvm_informes">cvm_informes</a></code></li>
+<li><code><a title="fundspy.drawdown" href="#fundspy.drawdown">drawdown</a></code></li>
+<li><code><a title="fundspy.returns" href="#fundspy.returns">returns</a></code></li>
+<li><code><a title="fundspy.sharpe" href="#fundspy.sharpe">sharpe</a></code></li>
+<li><code><a title="fundspy.sortino" href="#fundspy.sortino">sortino</a></code></li>
+<li><code><a title="fundspy.start_db" href="#fundspy.start_db">start_db</a></code></li>
+<li><code><a title="fundspy.update_db" href="#fundspy.update_db">update_db</a></code></li>
+<li><code><a title="fundspy.volatility" href="#fundspy.volatility">volatility</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
