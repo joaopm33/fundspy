@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.9.2" />
 <title>fundspy API documentation</title>
-<meta name="description" content="Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions …" />
+<meta name="description" content="This python based project helps you to extract and analyze data related to brazilian investment funds. It has functions to start and update a SQLite …" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
 <link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
@@ -22,20 +22,20 @@
 <h1 class="title">Module <code>fundspy</code></h1>
 </header>
 <section id="section-intro">
-<p>Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. </p>
+<p>This python based project helps you to extract and analyze data related to brazilian investment funds. It has functions to start and update a SQLite database containing cadastral information and daily quotas of all investment funds in brazil since 2005, as well as the ibovespa index and selic (the base interest rate of the brazilian economy). There are also functions to help you calculate important performance metrics for the investment funds, such as returns, volatility, correlation with indexes, beta, alpha, sharpe ratio, sortino ratio and capture ratios.</p>
 <p><b>Author:</b> <a href="https://www.linkedin.com/in/joao-penido-monteiro/">Joao Penido Monteiro</a></p>
 <p><b>Github:</b> <a href="https://github.com/joaopm33/fundspy">Project repository</a></p>
-<p><b>Examples:</b> <a href="https://joaopm33.github.io/fundspy/docs/examples.html">Functions example notebook</a></p>
+<p><b>Examples:</b> <a href="https://jovian.ml/joaopm33/fundspy-example-notebook/v/8">Functions example notebook</a></p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. 
+This python based project helps you to extract and analyze data related to brazilian investment funds. It has functions to start and update a SQLite database containing cadastral information and daily quotas of all investment funds in brazil since 2005, as well as the ibovespa index and selic (the base interest rate of the brazilian economy). There are also functions to help you calculate important performance metrics for the investment funds, such as returns, volatility, correlation with indexes, beta, alpha, sharpe ratio, sortino ratio and capture ratios.
 
 &lt;b&gt;Author:&lt;/b&gt; &lt;a href=&#34;https://www.linkedin.com/in/joao-penido-monteiro/&#34;&gt;Joao Penido Monteiro&lt;/a&gt;\n
 &lt;b&gt;Github:&lt;/b&gt; &lt;a href=&#34;https://github.com/joaopm33/fundspy&#34;&gt;Project repository&lt;/a&gt;\n
-&lt;b&gt;Examples:&lt;/b&gt; &lt;a href=&#34;https://joaopm33.github.io/fundspy/docs/examples.html&#34;&gt;Functions example notebook&lt;/a&gt;\n
+&lt;b&gt;Examples:&lt;/b&gt; &lt;a href=&#34;https://jovian.ml/joaopm33/fundspy-example-notebook/v/8&#34;&gt;Functions example notebook&lt;/a&gt;\n
 &#34;&#34;&#34;
 
 #modules from the python standard library
@@ -169,7 +169,10 @@ def start_db(db_dir: str = &#39;investments_database.db&#39;, start_year: int = 
                     except:
                         pass
 
-
+    #pushes target funds to sql for use when updating the database
+    if target_funds:
+        target_df = pd.DataFrame({&#39;targets&#39;:target_funds})
+        target_df.to_sql(&#39;target_funds&#39;, con , index=False)                    
     ##STEP 3:                    
     #creates index in the daily_quotas table to make future select queries faster. 
     #tradeoff: The updating proceesses of the database will be slower.
@@ -195,6 +198,8 @@ def start_db(db_dir: str = &#39;investments_database.db&#39;, start_year: int = 
                                     &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
                                     &#39;CONTROLADOR&#39;: object}
                             )
+    if target_funds:
+        info_cad = info_cad[info_cad.CNPJ_FUNDO.isin(target_funds)]
     info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, index=False)
 
 
@@ -291,12 +296,19 @@ def update_db(db_dir: str = r&#39;investments_database.db&#39;):
     ##STEP 4
     #Pulls new data from CVM, investpy and the brazilian central bank
     #and pushes it to the database
+
+    try:#tries to read targets funds if they were specified when starting the database
+        target_funds = pd.read_sql(&#39;select targets from target_funds&#39;, con).targets.to_list()
+    except:
+        target_funds = []
     
     print(&#39;downloading new daily reports from the CVM website...\n&#39;)
     # downloads the daily cvm repport for each month between the last update and today
     for m in range(num_months+1): 
         data_alvo = last_quota + relativedelta(months=+m) 
-        informe = cvm_informes(data_alvo.year, data_alvo.month)        
+        informe = cvm_informes(data_alvo.year, data_alvo.month)
+        if target_funds:
+            informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
         try:
             informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
         except:
@@ -309,6 +321,8 @@ def update_db(db_dir: str = r&#39;investments_database.db&#39;):
                                     &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
                                     &#39;CONTROLADOR&#39;: object}
                             )
+    if target_funds: #filters target funds if they were specified when building the database.
+        info_cad = info_cad[info_cad.CNPJ_FUNDO.isin(target_funds)]
     info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, if_exists=&#39;replace&#39;, index=False)
 
     #updates daily interest returns (selic)
@@ -356,17 +370,17 @@ def update_db(db_dir: str = r&#39;investments_database.db&#39;):
 
 
 def returns(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;], rolling: bool = False, window_size: int = 1) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)\n
+    &#34;&#34;&#34;Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case).\n
 
     &lt;b&gt;Parameters&lt;/b&gt;:\n
-    df (pd.DataFrame): Pandas dataframe with the needed columns\n
-    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;)\n
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;])\n
-    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns\n
-    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over\n
+    df (pd.DataFrame): Pandas dataframe with the needed columns.\n
+    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;).\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;]).\n
+    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns.\n
+    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over.\n
 
     &lt;b&gt;Returns:&lt;/b&gt;\n
-    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows
+    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows.
 
    &#34;&#34;&#34;
     if rolling == False:
@@ -1024,31 +1038,31 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
 <span>def <span class="ident">returns</span></span>(<span>df: pandas.core.frame.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'], rolling: bool = False, window_size: int = 1) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)</p>
+<div class="desc"><p>Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case).</p>
 <p><b>Parameters</b>:</p>
-<p>df (pd.DataFrame): Pandas dataframe with the needed columns</p>
-<p>group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code')</p>
-<p>values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price'])</p>
-<p>rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns</p>
-<p>window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over</p>
+<p>df (pd.DataFrame): Pandas dataframe with the needed columns.</p>
+<p>group (str): name of the column in the dataframe used to group values (example: 'stock_ticker' or 'fund_code').</p>
+<p>values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: ['asset_price', 'index price']).</p>
+<p>rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns.</p>
+<p>window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over.</p>
 <p><b>Returns:</b></p>
-<p>pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows</p></div>
+<p>pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def returns(df: pd.DataFrame, group: str = &#39;CNPJ_FUNDO&#39;, values: list = [&#39;VL_QUOTA&#39;], rolling: bool = False, window_size: int = 1) -&gt; pd.DataFrame:
-    &#34;&#34;&#34;Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case)\n
+    &#34;&#34;&#34;Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the CAGR in this case).\n
 
     &lt;b&gt;Parameters&lt;/b&gt;:\n
-    df (pd.DataFrame): Pandas dataframe with the needed columns\n
-    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;)\n
-    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;])\n
-    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns\n
-    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over\n
+    df (pd.DataFrame): Pandas dataframe with the needed columns.\n
+    group (str): name of the column in the dataframe used to group values (example: &#39;stock_ticker&#39; or &#39;fund_code&#39;).\n
+    values (list): names of the columns in the dataframe wich contains the asset and its benchmark prices (Example: [&#39;asset_price&#39;, &#39;index price&#39;]).\n
+    rolling (bool): True or False. Indicates if the function will return total returns for each asset or rolling window returns.\n
+    window_size: (int): Default = 1. Only useful if rolling = True. Defines the size of the rolling window wich the returns will be calculated over.\n
 
     &lt;b&gt;Returns:&lt;/b&gt;\n
-    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows
+    pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows.
 
    &#34;&#34;&#34;
     if rolling == False:
@@ -1236,7 +1250,10 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
                     except:
                         pass
 
-
+    #pushes target funds to sql for use when updating the database
+    if target_funds:
+        target_df = pd.DataFrame({&#39;targets&#39;:target_funds})
+        target_df.to_sql(&#39;target_funds&#39;, con , index=False)                    
     ##STEP 3:                    
     #creates index in the daily_quotas table to make future select queries faster. 
     #tradeoff: The updating proceesses of the database will be slower.
@@ -1262,6 +1279,8 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
                                     &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
                                     &#39;CONTROLADOR&#39;: object}
                             )
+    if target_funds:
+        info_cad = info_cad[info_cad.CNPJ_FUNDO.isin(target_funds)]
     info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, index=False)
 
 
@@ -1371,12 +1390,19 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
     ##STEP 4
     #Pulls new data from CVM, investpy and the brazilian central bank
     #and pushes it to the database
+
+    try:#tries to read targets funds if they were specified when starting the database
+        target_funds = pd.read_sql(&#39;select targets from target_funds&#39;, con).targets.to_list()
+    except:
+        target_funds = []
     
     print(&#39;downloading new daily reports from the CVM website...\n&#39;)
     # downloads the daily cvm repport for each month between the last update and today
     for m in range(num_months+1): 
         data_alvo = last_quota + relativedelta(months=+m) 
-        informe = cvm_informes(data_alvo.year, data_alvo.month)        
+        informe = cvm_informes(data_alvo.year, data_alvo.month)
+        if target_funds:
+            informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
         try:
             informe.to_sql(&#39;daily_quotas&#39;, con , if_exists = &#39;append&#39;, index=False)
         except:
@@ -1389,6 +1415,8 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
                                     &#39;INF_TAXA_PERFM&#39;: object, &#39;INF_TAXA_ADM&#39;: object, &#39;DIRETOR&#39;: object, &#39;CNPJ_CONTROLADOR&#39;: object,
                                     &#39;CONTROLADOR&#39;: object}
                             )
+    if target_funds: #filters target funds if they were specified when building the database.
+        info_cad = info_cad[info_cad.CNPJ_FUNDO.isin(target_funds)]
     info_cad.to_sql(&#39;info_cadastral_funds&#39;, con, if_exists=&#39;replace&#39;, index=False)
 
     #updates daily interest returns (selic)
