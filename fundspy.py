@@ -1,9 +1,9 @@
 """
-Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. 
+This python based project helps you to extract and analyze data related to brazilian investment funds. It has functions to start and update a SQLite database containing cadastral information and daily quotas of all investment funds in brazil since 2005, as well as the ibovespa index and selic (the base interest rate of the brazilian economy). There are also functions to help you calculate important performance metrics for the investment funds, such as returns, volatility, correlation with indexes, beta, alpha, sharpe ratio, sortino ratio and capture ratios.
 
 <b>Author:</b> <a href="https://www.linkedin.com/in/joao-penido-monteiro/">Joao Penido Monteiro</a>\n
 <b>Github:</b> <a href="https://github.com/joaopm33/fundspy">Project repository</a>\n
-<b>Examples:</b> <a href="https://joaopm33.github.io/fundspy/docs/examples.html">Functions example notebook</a>\n
+<b>Examples:</b> <a href="https://jovian.ml/joaopm33/fundspy-example-notebook/v/8">Functions example notebook</a>\n
 """
 
 #modules from the python standard library
@@ -317,7 +317,7 @@ def update_db(db_dir: str = r'investments_database.db'):
                                                 country='brazil',
                                                 from_date=last_update.strftime('%d/%m/%Y'),
                                                 to_date=datetime.date.today().strftime('%d/%m/%Y'))
-        ibov.to_sql('ibov_returns', con , if_exists = 'append', index=False)
+        ibov.to_sql('ibov_returns', con , if_exists = 'append', index=True)
     except:
         pass
 
