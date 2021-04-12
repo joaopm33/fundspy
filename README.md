@@ -7,7 +7,7 @@ There are also functions to help you calculate important performance metrics for
 
 ## Documentation and Examples
 * You can access functions documentation [here](https://joaopm33.github.io/fundspy/docs/fundspy.html).
-* Theres also a Jupyter Notebook with use examples of all performance metrics functions [here](https://jovian.ai/joaopm33/fundspy-example-notebook/v/8?utm_source=embed).
+* Theres also a Jupyter Notebook with use examples of all performance metrics functions [here](https://jovian.ai/joaopm33/fundspy-example-notebook).
 
 
 ## Getting Started
