@@ -178,6 +178,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
     ibov = pd.DataFrame(YahooFinancials('^BVSP').get_historical_price_data('1990-09-15', today, 'daily')['^BVSP']['prices'])
     ibov = ibov.drop(columns=['date', 'close']).rename(columns={'formatted_date':'date', 'adjclose':'close'}).iloc[:,[5,0,1,2,3,4]]
     ibov['date'] = pd.to_datetime(ibov['date'])
+    ibov.columns = [i.capitalize() for i in ibov.columns] #capitalizes columns to keep consistency with previous format (investpy)
     ibov.to_sql('ibov_returns', con, index=False) 
 
 
@@ -317,6 +318,7 @@ def update_db(db_dir: str = r'investments_database.db'):
         ibov = pd.DataFrame(YahooFinancials('^BVSP').get_historical_price_data(last_update.strftime('%Y-%m-%d'), today, 'daily')['^BVSP']['prices'])
         ibov = ibov.drop(columns=['date', 'close']).rename(columns={'formatted_date':'date', 'adjclose':'close'}).iloc[:,[5,0,1,2,3,4]]
         ibov['date'] = pd.to_datetime(ibov['date'])
+        ibov.columns = [i.capitalize() for i in ibov.columns] #capitalizes columns to keep consistency with previous format (investpy)
         ibov.to_sql('ibov_returns', con , if_exists = 'append', index=False)
     except:
         pass
