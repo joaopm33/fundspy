@@ -13,9 +13,9 @@ import datetime
 import calendar
 import sqlite3
 
-#packages used to download data from the internet
+#packages used to download data
 import requests
-import investpy
+from yahoofinancials import YahooFinancials
 
 #packages used to manipulate data
 import pandas as pd
@@ -174,11 +174,11 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
     ##STEP 5:
     #downloads daily ibovespa prices from investing.com and pushes it to the database
     print('downloading ibovespa index prices from investing.com ...\n')
-    ibov = investpy.get_etf_historical_data(etf='Ishares Ibovespa', 
-                                        country='brazil',
-                                        from_date='01/01/2005',
-                                        to_date=datetime.date.today().strftime('%d/%m/%Y'))
-    ibov.to_sql('ibov_returns', con, index=True) 
+    today = (datetime.date.today() + datetime.timedelta(1)).strftime('%Y-%m-%d')
+    ibov = pd.DataFrame(YahooFinancials('^BVSP').get_historical_price_data('1990-09-15', today, 'daily')['^BVSP']['prices'])
+    ibov = ibov.drop(columns=['date', 'close']).rename(columns={'formatted_date':'date', 'adjclose':'close'}).iloc[:,[5,0,1,2,3,4]]
+    ibov['date'] = pd.to_datetime(ibov['date'])
+    ibov.to_sql('ibov_returns', con, index=False) 
 
 
     ##STEP 6:
@@ -313,11 +313,11 @@ def update_db(db_dir: str = r'investments_database.db'):
     #updates ibovespa data
     print('updating ibovespa returns...\n')
     try:
-        ibov = investpy.get_etf_historical_data(etf='Ishares Ibovespa', 
-                                                country='brazil',
-                                                from_date=last_update.strftime('%d/%m/%Y'),
-                                                to_date=datetime.date.today().strftime('%d/%m/%Y'))
-        ibov.to_sql('ibov_returns', con , if_exists = 'append', index=True)
+        today = (datetime.date.today() + datetime.timedelta(1)).strftime('%Y-%m-%d')
+        ibov = pd.DataFrame(YahooFinancials('^BVSP').get_historical_price_data(last_update.strftime('%Y-%m-%d'), today, 'daily')['^BVSP']['prices'])
+        ibov = ibov.drop(columns=['date', 'close']).rename(columns={'formatted_date':'date', 'adjclose':'close'}).iloc[:,[5,0,1,2,3,4]]
+        ibov['date'] = pd.to_datetime(ibov['date'])
+        ibov.to_sql('ibov_returns', con , if_exists = 'append', index=False)
     except:
         pass
 
