@@ -53,7 +53,7 @@ start_db(db_dir = 'investments_database.db',
          target_funds = [])
 ```
 
-### Atualizando o Banco de Dados
+### Atualizando o banco de dados
 
 Uma vez que você queria extrair novos dados e atualizar a sua base, execute o arquivo "update_db.py" no diretório do projeto a partir do seu terminal:
 
