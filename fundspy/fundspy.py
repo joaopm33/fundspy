@@ -16,6 +16,7 @@ import sqlite3
 
 #packages used to download data
 import requests
+from requests import HTTPError
 from yahoofinancials import YahooFinancials
 
 #packages used to manipulate data
@@ -53,11 +54,11 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             try:
                 #remove coluna que aparece apenas em certos arquivos para evitar inconsistencias
                 cotas.drop(columns = ['TP_FUNDO'], inplace = True)
-            except:
+            except KeyError:
                 pass
             
             return cotas
-        except:
+        except HTTPError:
             print('theres no report for this date yet!.\n')
     
     if int(year) < 2017:
@@ -122,7 +123,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
                         informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                     #appends information to the sql database
                     informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
-                except:
+                except AttributeError:
                     pass
             
             elif year<2017: #loop structure to handle years before 2017 (they have a different file structure)
@@ -135,7 +136,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
                             informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
                         #appends information to the sql database
                         informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
-                    except:
+                    except AttributeError:
                         pass
 
     #pushes target funds to sql for use when updating the database
@@ -265,7 +266,7 @@ def update_db(db_dir: str = r'investments_database.db'):
 
     try:#tries to read targets funds if they were specified when starting the database
         target_funds = pd.read_sql('select targets from target_funds', con).targets.to_list()
-    except:
+    except AttributeError:
         target_funds = []
     
     print('downloading new daily reports from the CVM website...\n')
@@ -277,7 +278,7 @@ def update_db(db_dir: str = r'investments_database.db'):
             informe = informe[informe.CNPJ_FUNDO.isin(target_funds)]
         try:
             informe.to_sql('daily_quotas', con , if_exists = 'append', index=False)
-        except:
+        except AttributeError:
             pass 
 
     #downloads cadastral information from CVM of the fundos and pushes it to the database
@@ -310,16 +311,12 @@ def update_db(db_dir: str = r'investments_database.db'):
 
     #updates ibovespa data
     print('updating ibovespa returns...\n')
-    try:
-        today = (datetime.date.today() + datetime.timedelta(1)).strftime('%Y-%m-%d')
-        ibov = pd.DataFrame(YahooFinancials('^BVSP').get_historical_price_data(last_update.strftime('%Y-%m-%d'), today, 'daily')['^BVSP']['prices'])
-        ibov = ibov.drop(columns=['date', 'close']).rename(columns={'formatted_date':'date', 'adjclose':'close'}).iloc[:,[5,0,1,2,3,4]]
-        ibov['date'] = pd.to_datetime(ibov['date'])
-        ibov.columns = [i.capitalize() for i in ibov.columns] #capitalizes columns to keep consistency with previous format (investpy)
-        ibov.to_sql('ibov_returns', con , if_exists = 'append', index=False)
-    except:
-        pass
-
+    today = (datetime.date.today() + datetime.timedelta(1)).strftime('%Y-%m-%d')
+    ibov = pd.DataFrame(YahooFinancials('^BVSP').get_historical_price_data(last_update.strftime('%Y-%m-%d'), today, 'daily')['^BVSP']['prices'])
+    ibov = ibov.drop(columns=['date', 'close']).rename(columns={'formatted_date':'date', 'adjclose':'close'}).iloc[:,[5,0,1,2,3,4]]
+    ibov['date'] = pd.to_datetime(ibov['date'])
+    ibov.columns = [i.capitalize() for i in ibov.columns] #capitalizes columns to keep consistency with previous format (investpy)
+    ibov.to_sql('ibov_returns', con , if_exists = 'append', index=False)
 
     ##STEP 5
     #updates the log in the database
