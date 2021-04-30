@@ -248,18 +248,14 @@ def update_db(db_dir: str = r'investments_database.db'):
     print('deleting redundant data from the database... \n')
     tables = {'daily_quotas' : ['DT_COMPTC',last_quota.strftime("%Y-%m-01")],
               'ibov_returns' : ['Date',last_update.strftime("%Y-%m-%d")]}
-    for i in tables:
-        #sql delete statement to the database
-        delete = f'''
-        delete
-        from {i}
-        where {tables[i][0]} >= "{tables[i][1]}"
-        '''
+    
+    cursor = con.cursor()
+    
+    #sql delete statement to the database
+    cursor.execute('delete from daily_quotas where DT_COMPTC >= :date', {'date': last_quota.strftime("%Y-%m-01")})
+    cursor.execute('delete from ibov_returns where Date >= :date', {'date': last_update.strftime("%Y-%m-%d")})
         
-        cursor = con.cursor()
-        cursor.execute(delete)
-        con.commit()
-        
+    con.commit()  
     cursor.close()
 
 
