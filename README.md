@@ -15,7 +15,7 @@ You will need python 3.5 (at least) for running this project. To start, first cl
 
 ### Installing
 
-Now is the time to install the needed libraries in the "requirements.txt" file.  Navigate to the package directory and then run in your command line:
+Now is the time to install the needed libraries in the "requirements.txt" file.  Open the terminal, navigate to the package directory and then run in your command line:
 
 ```
 pip install -r requirements.txt
