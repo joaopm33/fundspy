@@ -1,6 +1,6 @@
 # fundspy
 
-[![Version](https://img.shields.io/pypi/v/fundspy)]() [![Status](https://img.shields.io/pypi/status/fundspy)]()  [![License](https://img.shields.io/github/license/joaopm33/fundspy)]() [![Repo size](https://img.shields.io/github/repo-size/joaopm33/fundspy)]()   [![Stars](https://img.shields.io/github/stars/joaopm33/fundspy)]()  [![Issues](https://img.shields.io/github/issues/joaopm33/fundspy)]() [![Last commit](https://img.shields.io/github/last-commit/joaopm33/fundspy)]()
+[![Version](https://img.shields.io/pypi/v/fundspy)]() [![CodeFactor](https://www.codefactor.io/repository/github/joaopm33/fundspy/badge/master)](https://www.codefactor.io/repository/github/joaopm33/fundspy/overview/master) [![Status](https://img.shields.io/pypi/status/fundspy)]()  [![License](https://img.shields.io/github/license/joaopm33/fundspy)]() [![Repo size](https://img.shields.io/github/repo-size/joaopm33/fundspy)]()   [![Stars](https://img.shields.io/github/stars/joaopm33/fundspy)]()  [![Issues](https://img.shields.io/github/issues/joaopm33/fundspy)]() [![Last commit](https://img.shields.io/github/last-commit/joaopm33/fundspy)]() 
 
 ### [Read in English / Leia em Inglês](README.md)
 
