@@ -1,5 +1,5 @@
 # fundspy
-### [Read in English/Leia em Inglês](README.md)
+### [Read in English / Leia em Inglês](README.md)
 
 Esse projeto baseado em python te permite extrair e analisar dados relacionados a fundos de investimento brasileiros. 
 O projeto possui funções para iniciar e atualizar um banco de dados SQLite com informações cadastrais e cotas diárias de todos os fundos de investimento disponíveis na CVM (desde 2005), assim como dados relacionados ao índice ibovespa e a taxa selic.
