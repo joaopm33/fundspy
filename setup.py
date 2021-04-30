@@ -1,10 +1,14 @@
 from distutils.core import setup
+with open('README.md') as f:
+  long_description = f.read()
 setup(
   name = 'fundspy',         # How you named your package folder (MyLib)
   packages = ['fundspy'],   # Chose the same as "name"
   version = '0.1',      # Start with a small number and increase it with every change you make
   license='MIT',        # Chose a license from here: https://help.github.com/articles/licensing-a-repository
   description = 'Download brazillian investment funds and their benchmarks data from CVM and analyze them with pre-built functions. ',   # Give a short description about your library
+  long_description=long_description,
+  long_description_content_type='text/markdown',  
   author = 'Joao Penido Monteiro',                   # Type in your name
   author_email = 'joaopm33@gmail.com',      # Type in your E-Mail
   url = 'https://linktr.ee/joaopenido',   # Provide either the link to your github or to your website
