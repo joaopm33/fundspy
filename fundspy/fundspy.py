@@ -377,7 +377,7 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
 
     #if the parameter rolling = True, returns the total compound returns in the period, the number of days
     # and the Compound Annual Growth Rate (CAGR)
-    elif not rolling: 
+    if not rolling: 
         returns = df[[group]].merge(returns, left_index = True, right_index = True)
         
         #calculates the compound returns
@@ -460,7 +460,7 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
         
         return vol
 
-    elif rolling: 
+    if rolling: 
         vol = df.copy(deep=True)
         for col in values:
             vol = df[df[col].notnull()]
@@ -528,7 +528,7 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
         corr = corr.drop(columns=[index_returns])
         corr.columns=['correlation_benchmark']
         return corr
-    elif rolling:  
+    if rolling:  
         #calculates the correlation between the assests returns across rolling windows     
         corr = (df[df[asset_returns].notnull()].groupby(group)[[asset_returns,index_returns]]
                                               .rolling(window_size)
@@ -542,7 +542,7 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
         return df2
     
     raise Exception("Wrong Parameter: rolling can only be True or False") 
-    
+
 
 def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = 'correlation_benchmark') -> pd.DataFrame:
     """Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets.\n
