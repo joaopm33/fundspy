@@ -1,5 +1,8 @@
 # fundspy
-### [Read in Portuguese / Leia em Portugues](README-PTBR.md)
+
+[![Version](https://img.shields.io/pypi/v/fundspy)]() [![Status](https://img.shields.io/pypi/status/fundspy)]()  [![License](https://img.shields.io/github/license/joaopm33/fundspy)]() [![Repo size](https://img.shields.io/github/repo-size/joaopm33/fundspy)]()   [![Stars](https://img.shields.io/github/stars/joaopm33/fundspy)]()  [![Issues](https://img.shields.io/github/issues/joaopm33/fundspy)]() 
+
+### [Read in Portuguese / Leia em Portugues](https://github.com/joaopm33/fundspy/blob/master/README-PTBR.md)
 
 This python based project helps you to extract and analyze data related to brazilian investment funds. 
 It has functions to start and update a SQLite database containing cadastral information and daily quotas of all investment funds in brazil since 2005, as well as the ibovespa index and selic (the base interest rate of the brazilian economy).
