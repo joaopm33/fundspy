@@ -40,19 +40,19 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
 
    """
 
-    if int(year) >= 2017: #utiliza a estrutura de download para dados a partir de 2017
+    if int(year) >= 2017: #uses download process from reports after the year of 2017
         try:
             mth = f"{mth:02d}"
             year = str(year)
-            #criamos a url a partis dos parametros passados para a funcao
+            #creates url using the parameters provided to the function
             url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_'+year+mth+'.csv'
             
-            #lemos o arquivo csv retornado pelo link
+            #reads the csv returned by the link
             cotas = pd.read_csv(url, sep =';')
-            cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #define tipo datetime para coluna de data
+            cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
             
             try:
-                #remove coluna que aparece apenas em certos arquivos para evitar inconsistencias
+                #removes column present in only a few reports to avoid inconsistency when making the union of reports
                 cotas.drop(columns = ['TP_FUNDO'], inplace = True)
             except KeyError:
                 pass
@@ -66,22 +66,22 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             year = str(year)
 
             url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/inf_diario_fi_' + year + '.zip'
-            #envia requests para a url
+            #sends request to the url
             r = requests.get(url, stream=True, allow_redirects=True)
             
-            with open('informe' + year + '.zip', 'wb') as fd: #salva arquivo .zip
+            with open('informe' + year + '.zip', 'wb') as fd: #writes the .zip file downloaded
                 fd.write(r.content)
 
-            zip_inf = zipfile.ZipFile('informe' + year + '.zip') #abre arquivo .zip
+            zip_inf = zipfile.ZipFile('informe' + year + '.zip') #opens the .zip file
             
             #le os arquivos csv dentro do arquivo zip
             informes = [pd.read_csv(zip_inf.open(f), sep=";") for f in zip_inf.namelist()] 
             cotas = pd.concat(informes,ignore_index=True)
             
-            cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #define tipo datetime para coluna de data
+            cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
 
             zip_inf.close() #fecha o arquivo zip
-            os.remove('informe' + year + '.zip') #apaga o arquivo zip
+            os.remove('informe' + year + '.zip') #deletes .zip file
             
             return cotas
         
@@ -633,7 +633,7 @@ def capture_ratio(df: pd.DataFrame, asset_returns: str, bench_returns: str, retu
     df_bear = df_bear[df_bear[bench_returns] <= 0] #dataframe with only negative returns from the benchmark
 
     tables = [df_bull, df_bear]
-    for i in range(len(tables)): #performs set of operations in each table
+    for i, _ in enumerate(tables): #performs set of operations in each table
         #calculates total returns + 1
         compound = tables[i].groupby(group)[[asset_returns,bench_returns]].apply(lambda x: np.prod(1+x))
         
