@@ -1,4 +1,5 @@
 # fundspy
+### [Read in English/Leia em Inglês](README.md)
 
 Esse projeto baseado em python te permite extrair e analisar dados relacionados a fundos de investimento brasileiros. 
 O projeto possui funções para iniciar e atualizar um banco de dados SQLite com informações cadastrais e cotas diárias de todos os fundos de investimento disponíveis na CVM (desde 2005), assim como dados relacionados ao índice ibovespa e a taxa selic.
@@ -29,7 +30,7 @@ Agora você está pronto para começar a usar as funções.
 Os principais usos desse projeto estão relacionados a iniciar um banco de dados de fundos, atualizá-lo e calcular métricas de performance com funções pré construidas.
 
 
-### Construindo o Banco de Dados
+### Construindo o banco de dados
 
 Construir o banco de dados é fácil: basta executar o arquivo "start_db.py" no diretório do projeto a partir do seu terminal:
 
