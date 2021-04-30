@@ -30,7 +30,7 @@ The main use cases this library covers are starting a investment funds database,
 
 ### Building the database
 
-Starting the database is pretty easy: execute the file "start_db.py" in the project directory:
+Starting the database is pretty easy: execute the file "start_db.py" in the project directory from your terminal:
 
 ```
 python start_db.py
@@ -53,7 +53,7 @@ start_db(db_dir = 'investments_database.db',
 
 ### Updating the database
 
-Once you want to extract new data and update your database, run the "update_db.py" file in the project directory:
+Once you want to extract new data and update your database, run the "update_db.py" file in the project directory from your terminal:
 
 ```
 python update_db.py
