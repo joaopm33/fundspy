@@ -1,4 +1,7 @@
 # fundspy
+
+[![Version](https://img.shields.io/pypi/v/fundspy)]() [![Status](https://img.shields.io/pypi/status/fundspy)]()  [![License](https://img.shields.io/github/license/joaopm33/fundspy)]() [![Repo size](https://img.shields.io/github/repo-size/joaopm33/fundspy)]()   [![Stars](https://img.shields.io/github/stars/joaopm33/fundspy)]()  [![Issues](https://img.shields.io/github/issues/joaopm33/fundspy)]() 
+
 ### [Read in English / Leia em Inglês](README.md)
 
 Esse projeto baseado em python te permite extrair e analisar dados relacionados a fundos de investimento brasileiros. 
