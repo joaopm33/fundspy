@@ -7,7 +7,8 @@ This python based project helps you to extract and analyze data related to brazi
 """
 
 #modules from the python standard library
-import os, os.path
+import os
+import os.path
 import zipfile
 import datetime
 import calendar
@@ -65,7 +66,7 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
 
             url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/inf_diario_fi_' + year + '.zip'
             #envia requests para a url
-            r = requests.get(url, stream=True, verify=False, allow_redirects=True)
+            r = requests.get(url, stream=True, allow_redirects=True)
             
             with open('informe' + year + '.zip', 'wb') as fd: #salva arquivo .zip
                 fd.write(r.content)
@@ -353,7 +354,7 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
     pd.DataFrame: If rolling = True: Pandas dataframe with total % returns for the assets. If rolling = False: The original pandas dataframe with added columns for the % returns in the rolling windows.
 
    """
-    if rolling == False:
+    if not rolling:
         window_size = 1
 
     #garantees that the values are positive, once division by zero returns infinite
@@ -370,13 +371,13 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
     returns.columns = col_names
 
     #if the parameter rolling = False, returns the original data with the added rolling returns
-    if rolling == True:
+    if rolling:
         df2 = df.merge(returns, how='left', left_index=True, right_index=True)
         return df2
 
     #if the parameter rolling = True, returns the total compound returns in the period, the number of days
     # and the Compound Annual Growth Rate (CAGR)
-    elif rolling == False: 
+    elif not rolling: 
         returns = df[[group]].merge(returns, left_index = True, right_index = True)
         
         #calculates the compound returns
@@ -400,8 +401,7 @@ def returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUO
 
         return returns                                   
 
-    else: 
-        raise Exception("Wrong Parameter: rolling can only be True or False.") 
+    raise Exception("Wrong Parameter: rolling can only be True or False.") 
         
 
 def cum_returns(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA']) -> pd.DataFrame:
@@ -444,7 +444,7 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
     pd.DataFrame: If rolling = False: Pandas dataframe with total volatility for the assets. If rolling = True: The original pandas dataframe with added columns for the volatility in the rolling windows.
 
    """
-    if rolling == False:
+    if not rolling:
         vol = df.copy(deep=True)
         for col in values:
             vol = df[df[col].notnull()]
@@ -460,7 +460,7 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
         
         return vol
 
-    elif rolling == True: 
+    elif rolling: 
         vol = df.copy(deep=True)
         for col in values:
             vol = df[df[col].notnull()]
@@ -482,8 +482,7 @@ def volatility(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_
         df2 = df.merge(vol.drop(columns = group),left_index=True,right_index=True)
         return df2
     
-    else: 
-        raise Exception("Wrong Parameter: rolling can only be True or False.")
+    raise Exception("Wrong Parameter: rolling can only be True or False.")
   
 
 def drawdown(df: pd.DataFrame, group: str = 'CNPJ_FUNDO', values: list = ['VL_QUOTA'])-> pd.DataFrame:
@@ -521,7 +520,7 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
     pd.DataFrame: If rolling = False: Pandas dataframe with total correlation for the assets and their benchmarks. If rolling = True: The original pandas dataframe with an added column for the correlation in the rolling windows.
 
    """
-    if rolling == False: 
+    if not rolling: 
         #calculates the correlation between assests returns for the whole period
         corr = df[df[asset_returns].notnull()].groupby([group])[[asset_returns,index_returns]].corr()
         corr = corr.xs(index_returns,level = 1, drop_level=False)
@@ -529,7 +528,7 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
         corr = corr.drop(columns=[index_returns])
         corr.columns=['correlation_benchmark']
         return corr
-    elif rolling == True:  
+    elif rolling:  
         #calculates the correlation between the assests returns across rolling windows     
         corr = (df[df[asset_returns].notnull()].groupby(group)[[asset_returns,index_returns]]
                                               .rolling(window_size)
@@ -541,9 +540,9 @@ def corr_benchmark(df: pd.DataFrame,  asset_returns: str, index_returns: str, gr
                 )
         df2 = df.merge(corr.drop(columns = [group]),left_index=True,right_index=True)
         return df2
-    else:
-        raise Exception("Wrong Parameter: rolling can only be True or False") 
-
+    
+    raise Exception("Wrong Parameter: rolling can only be True or False") 
+    
 
 def beta(df: pd.DataFrame, asset_vol: str, bench_vol: str, correlation: str = 'correlation_benchmark') -> pd.DataFrame:
     """Calculates the beta (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets.\n
