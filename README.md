@@ -32,7 +32,7 @@ The main use cases this library covers are starting a investment funds database,
 
 ### Building the database
 
-Starting the database is pretty easy: execute the start_db function. You can do this creating a file "start_db.py" in your local directory and pasting the following code inside it (or just download it [here](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
+Starting the database is pretty easy: just execute the start_db function. You can do this creating a file "start_db.py" in your local directory and pasting the following code inside it (or just download it [here](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
 
 ```
 from fundspy.fundspy import cvm_informes, start_db
