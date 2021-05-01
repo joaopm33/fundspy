@@ -33,7 +33,7 @@ Os principais usos desse projeto estão relacionados a iniciar um banco de dados
 
 ### Construindo o banco de dados
 
-Construir o banco de dados é fácil: basta executar a função start_db. Para fazer isso, crie um arquivo "start_db.py" no seu diretório local e cole o código abaixo dentro do arquivo (ou apenas baixe diretamente [aqui](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
+Para construir o banco de dados você deverá executar a função "start_db". Para fazer isso, crie um arquivo "start_db.py" no seu diretório local e cole o código abaixo dentro do arquivo (ou apenas baixe diretamente [aqui](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
 
 ```
 from fundspy.fundspy import cvm_informes, start_db
@@ -47,7 +47,7 @@ python start_db.py
 
 Será criado um banco de dados SQLite em seu diretório com ~6Gb, então tenha certeza de possuir espaço livre suficiente.
 
-Você também pode abrir o arquivo "start_db.py" em um editor de texto e alterar os parametros da função start_db. Para extrair um recorte menor dos dados disponíveis, use os parâmetros:
+Você também pode alterar os parametros da função start_db. Para extrair um recorte menor dos dados disponíveis, use os parâmetros:
 
 * ```start_year``` para definir o ano inicial da coleta de dados. 
 * ```target_funds``` para definir uma lista de CNPJs de fundos alvo para a extração.
@@ -98,4 +98,4 @@ This package contains pre-built performance metrics for investment funds analysi
 
 ## License
 
-Esse projeto tem a licença MIT License - veja o arquivo [LICENSE.md](LICENSE.md) para mais detalhes
+Esse projeto tem a licença MIT License - veja o arquivo [LICENSE.md](LICENSE.md) para mais detalhes.
