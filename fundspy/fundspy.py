@@ -16,11 +16,12 @@ import sqlite3
 
 #packages used to download data
 import requests
-from requests import HTTPError
+from urllib.request import HTTPError
 from yahoofinancials import YahooFinancials
 
 #packages used to manipulate data
 import pandas as pd
+from pandas.io.sql import DatabaseError 
 import numpy as np
 
 #other packages
@@ -266,7 +267,7 @@ def update_db(db_dir: str = r'investments_database.db'):
 
     try:#tries to read targets funds if they were specified when starting the database
         target_funds = pd.read_sql('select targets from target_funds', con).targets.to_list()
-    except AttributeError:
+    except DatabaseError:
         target_funds = []
     
     print('downloading new daily reports from the CVM website...\n')
