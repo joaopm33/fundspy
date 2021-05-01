@@ -6,6 +6,7 @@
 
 Esse projeto baseado em python te permite extrair e analisar dados relacionados a fundos de investimento brasileiros. 
 O projeto possui funções para iniciar e atualizar um banco de dados SQLite com informações cadastrais e cotas diárias de todos os fundos de investimento disponíveis na CVM (desde 2005), assim como dados relacionados ao índice ibovespa e a taxa selic.
+
 Também existem funções para calcular métricas de performance importantes para a análise quantitativa dos fundos, como retornos, volatilidade, correlação com índices, beta, alpha, sharpe ratio, sortino ratio e capture ratios.
 
 
