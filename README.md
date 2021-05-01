@@ -11,16 +11,15 @@ There are also functions to help you calculate important performance metrics for
 
 
 ## Documentation and Examples
-* You can access functions documentation [here](https://joaopm33.github.io/fundspy/docs/fundspy.html).
-* Theres also a Jupyter Notebook with use examples of all performance metrics functions [here](https://jovian.ai/joaopm33/fundspy-example-notebook).
+* You can access the functions documentation [here](https://joaopm33.github.io/fundspy/docs/fundspy.html).
+* Theres also a Notebook with use examples of all performance metrics functions [here](https://jovian.ai/joaopm33/fundspy-example-notebook).
 
 
 ## Getting Started
-You will need python 3.5 (at least) for running this project. To start, first clone this repository to your local machine.
+You will need python 3.5 (at least) for running this project. 
 
 ### Installing
-
-Now is the time to install the package.  Open the terminal and execute the command:
+To install the package, open a terminal and execute the command:
 
 ```
 pip install fundspy
@@ -33,7 +32,7 @@ The main use cases this library covers are starting a investment funds database,
 
 ### Building the database
 
-Starting the database is pretty easy: just execute the start_db function. You can do this creating a file "start_db.py" in your local directory and pasting the following code inside it (or just download it [here](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
+To start the database you will have to execute the "start_db" function. You can do this by creating a file "start_db.py" in your local directory and pasting the following code inside it (or just download it [here](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
 
 ```
 from fundspy.fundspy import cvm_informes, start_db
@@ -75,22 +74,22 @@ run the "update_db.py" file from your terminal:
 python update_db.py
 ```
 
-This function will collect the data available between the last database update and the current system date. If you defined a subset of target funds in the ```target_funds = []``` parameter when starting the databased, they will also be considered when updating the database. 
+This function will collect the data available between the last database update and the current date. If you defined a subset of target funds in the ```target_funds = []``` parameter when starting the databased, it will also be considered when updating the database. 
 
-**Obs:** If you changed the default ```db_dir = r'investments_database.db'``` parameter when starting the database, make sure to add it to the update script.
+**Obs:** If you changed the default ```db_dir = r'investments_database.db'``` parameter when starting the database, make sure to add it to the "update_db" function as well.
 
 ### Calculating performance metrics for the investment funds
 This package contains pre-built performance metrics for investment funds analysis:
 * ```returns``` function - Calculates the % returns for the given assets both in rolling windows or for the full available period (you also get the [CAGR](https://www.investopedia.com/terms/c/cagr.asp) in this option).
 * ```cum_returns``` function - Calculates the [cumulative % returns](https://www.investopedia.com/terms/c/cumulativereturn.asp) for the given assets.
-* ```drawdown``` function - [Calculates the drawdown](https://www.investopedia.com/terms/d/drawdown.asp) (the % the asset is down from its all-time-high) for givens assets.
+* ```drawdown``` function - Calculates the [drawdown](https://www.investopedia.com/terms/d/drawdown.asp) (the % the asset is down from its all-time-high) for the givens assets.
 * ```volatility``` function - Calculates the [annualized volatillity](https://www.investopedia.com/terms/v/volatility.asp) (standard deviation of returns with degree of freedom = 0) for givens assets returns both in rolling windows or for the full available period.
 * ```corr_benchmark``` function - Calculates the [correlation](https://www.investopedia.com/terms/c/correlationcoefficient.asp) between assets and a given benchmark both in rolling windows or for the full available period.
-* ```beta``` function - Calculates the [beta](https://www.investopedia.com/terms/b/beta.asp) (measure of the volatility of an asset compared to the market, usually represented by a index benchmark) of the given assets.
-* ```alpha``` function - Calculates the [alpha](https://www.investopedia.com/terms/a/alpha.asp) (measure of the excess of return of an asset compared to the market, usually represented by a index benchmark) of the given assets.
-* ```sharpe``` function - Calculates the [sharpe ratio](https://www.investopedia.com/terms/s/sharperatio.asp) (average return earned in excess of the risk-free rate per unit of volatility) of the given assets.
-* ```sortino``` function - Calculates the [sortino ratio](https://www.investopedia.com/terms/s/sortinoratio.asp) (average return earned in excess of the risk-free rate per unit of negative volatility) of the given assets.
-* ```capture_ratio``` function - Calculates the [capture ratios](https://cleartax.in/s/capture-ratio) (measure of assets performance relative to its benchmark in bull and bear markets) of the given assets.
+* ```beta``` function - Calculates the [beta](https://www.investopedia.com/terms/b/beta.asp) (measure of the volatility of an asset compared to the market, usually represented by an index benchmark) for the given assets.
+* ```alpha``` function - Calculates the [alpha](https://www.investopedia.com/terms/a/alpha.asp) (measure of the excess of return of an asset compared to the market, usually represented by an index benchmark) for the given assets.
+* ```sharpe``` function - Calculates the [sharpe ratio](https://www.investopedia.com/terms/s/sharperatio.asp) (average return earned in excess of the risk-free rate per unit of volatility) for the given assets.
+* ```sortino``` function - Calculates the [sortino ratio](https://www.investopedia.com/terms/s/sortinoratio.asp) (average return earned in excess of the risk-free rate per unit of negative volatility) for the given assets.
+* ```capture_ratio``` function - Calculates the [capture ratios](https://cleartax.in/s/capture-ratio) (measure of assets performance relative to its benchmark in bull and bear markets windows) for the given assets.
 
 
 ## Authors
@@ -100,4 +99,4 @@ This package contains pre-built performance metrics for investment funds analysi
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
