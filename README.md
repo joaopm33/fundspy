@@ -19,13 +19,11 @@ You will need python 3.5 (at least) for running this project. To start, first cl
 
 ### Installing
 
-Now is the time to install the needed libraries in the "requirements.txt" file.  Open the terminal, navigate to the package directory and then run in your command line:
+Now is the time to install the package.  Open the terminal and execute the command:
 
 ```
-pip install -r requirements.txt
+pip install fundspy
 ```
-
-Now you are all set up to start using the package.
 
 
 ## Main Functionalities
@@ -34,7 +32,14 @@ The main use cases this library covers are starting a investment funds database,
 
 ### Building the database
 
-Starting the database is pretty easy: execute the file "start_db.py" in the project directory from your terminal:
+Starting the database is pretty easy: execute the start_db function. You can do this creating a file "start_db.py" in your local directory and pasting the following code inside it (or just download it [here](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
+
+```
+from fundspy.fundspy import cvm_informes, start_db
+start_db(db_dir = 'investments_database.db', start_year = 2005, target_funds = [])
+```
+
+and then executing the file from your terminal:
 
 ```
 python start_db.py
@@ -42,7 +47,7 @@ python start_db.py
 
 This will create a ~6Gb SQLite database in your disk named "investments_database.db", so be sure to have enough free space. 
 
-You can also open the "start_db.py" file in a text editor to change the start_db function parameters. To get a smaller subset of the available data, use the parameters: 
+You can also change the start_db function parameters. To get a smaller subset of the available data, use the parameters: 
 
 * ```start_year``` to set the minimal year used as filter. 
 * ```target_funds``` to pass a list of target funds CNPJs (unique ids).
@@ -57,11 +62,18 @@ start_db(db_dir = 'investments_database.db',
 
 ### Updating the database
 
-Once you want to extract new data and update your database, run the "update_db.py" file in the project directory from your terminal:
+Once you want to extract new data and update your database, create a file "update_db.py" in your local directory and paste the following code inside it (or just download it [here](https://github.com/joaopm33/fundspy/blob/master/example_scripts/update_db.py)):
 
+```
+from fundspy.fundspy import cvm_informes, update_db
+update_db(db_dir = r'investments_database.db')
+```
+
+run the "update_db.py" file from your terminal:
 ```
 python update_db.py
 ```
+
 This function will collect the data available between the last database update and the current system date. If you defined a subset of target funds in the ```target_funds = []``` parameter when starting the databased, they will also be considered when updating the database. 
 
 **Obs:** If you changed the default ```db_dir = r'investments_database.db'``` parameter when starting the database, make sure to add it to the update script.
