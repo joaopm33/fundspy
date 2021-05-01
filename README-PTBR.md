@@ -19,14 +19,11 @@ Você precisará do python na versão 3.5 ou superior para utilizar este projeto
 
 ### Instalação
 
-Para instalar as bibliotecas necessárias, abra o seu terminal, navegue até o diretório onde seus arquivos foram baixados e execute o seguinte comando:
+Para instalar o pacote, abra o seu terminal e execute o seguinte comando:
 
 ```
-pip install -r requirements.txt
+pip install fundspy
 ```
-
-Agora você está pronto para começar a usar as funções.
-
 
 ## Principais Funcionalidades
 
@@ -35,7 +32,13 @@ Os principais usos desse projeto estão relacionados a iniciar um banco de dados
 
 ### Construindo o banco de dados
 
-Construir o banco de dados é fácil: basta executar o arquivo "start_db.py" no diretório do projeto a partir do seu terminal:
+Construir o banco de dados é fácil: basta executar a função start_db. Para fazer isso, crie um arquivo "start_db.py" no seu diretório local e cole o código abaixo dentro do arquivo (ou apenas baixe diretamente [aqui](https://github.com/joaopm33/fundspy/blob/master/example_scripts/start_db.py)):
+
+```
+from fundspy.fundspy import cvm_informes, start_db
+start_db(db_dir = 'investments_database.db', start_year = 2005, target_funds = [])
+```
+e em seguida execute o arquivo criado pelo seu terminal com o comando:
 
 ```
 python start_db.py
@@ -58,7 +61,13 @@ start_db(db_dir = 'investments_database.db',
 
 ### Atualizando o banco de dados
 
-Uma vez que você queria extrair novos dados e atualizar a sua base, execute o arquivo "update_db.py" no diretório do projeto a partir do seu terminal:
+Uma vez que você queria extrair novos dados e atualizar a sua base, crie um arquivo "update_db.py" no seu diretório local e cole o código abaixo dentro do arquivo (ou apenas baixe diretamente [aqui](https://github.com/joaopm33/fundspy/blob/master/example_scripts/update_db.py)):
+
+```
+from fundspy.fundspy import cvm_informes, update_db
+update_db(db_dir = r'investments_database.db')
+```
+execute o arquivo criado pelo seu terminal:
 
 ```
 python update_db.py
