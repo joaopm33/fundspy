@@ -37,11 +37,11 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
     mth (int): The month of the report the function should download\n
 
     <b>Returns:</b>\n
-    pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2017, will contain data regarding the whole year
+    pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2021, will contain data regarding the whole year
 
    """
 
-    if int(year) >= 2017: #uses download process from reports after the year of 2017
+    if int(year) >= 2021: #uses download process from reports after the year of 2021
         try:
             mth = f"{mth:02d}"
             year = str(year)
@@ -60,9 +60,9 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             
             return cotas
         except HTTPError:
-            print('theres no report for this date yet!.\n')
+            print(f'{year}-{mth}: theres no report for this date yet!.\n')
     
-    if int(year) < 2017:
+    if int(year) < 2021:
         try:
             year = str(year)
 
@@ -81,6 +81,12 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             
             cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
 
+            try:
+                #removes column present in only a few reports to avoid inconsistency when making the union of reports
+                cotas.drop(columns = ['TP_FUNDO'], inplace = True)
+            except KeyError:
+                pass
+            
             zip_inf.close() #fecha o arquivo zip
             os.remove('informe' + year + '.zip') #deletes .zip file
             
@@ -112,11 +118,11 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
     #downloads each report in the cvm website and pushes it to the sql database daily_quotas table
     print('downloading daily reports from the CVM website... \n')
 
-    #for each year between 2017 and now
+    #for each year between 2021 and now
     for year in tqdm(range(start_year, datetime.date.today().year + 1), position = 0, leave=True): 
         for mth in range(1, 13): #for each month
-            #loop structure for years equal or after 2017
-            if year>=2017: 
+            #loop structure for years equal or after 2021
+            if year>=2021: 
                 informe = cvm_informes(str(year), mth)
 
                 try:
@@ -127,7 +133,7 @@ def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, ta
                 except AttributeError:
                     pass
             
-            elif year<2017: #loop structure to handle years before 2017 (they have a different file structure)
+            elif year<2021: #loop structure to handle years before 2021 (they have a different file structure)
                 #only executes the download function once every year to avoid duplicates (unique file for each year)       
                 if mth == 12:
                     informe = cvm_informes(str(year), mth)
