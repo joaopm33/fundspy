@@ -60,7 +60,19 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
             
             return cotas
         except HTTPError:
-            print(f'{year}-{mth}: theres no report for this date yet!.\n')
+            try:
+                csv_path=f"C:/Users/asbra/Downloads/inf_diario_fi_{year}{mth}.csv"
+                print(f'Looking for csv in {csv_path}')
+                cotas = pd.read_csv(csv_path, sep =';')
+                cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
+                try:
+                    #removes column present in only a few reports to avoid inconsistency when making the union of reports
+                    cotas.drop(columns = ['TP_FUNDO'], inplace = True)
+                except KeyError:
+                    pass
+                return cotas
+            except:
+                print(f'{year}-{mth}: theres no report for this date yet!.\n')
     
     if int(year) < 2021:
         try:
