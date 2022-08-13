@@ -40,72 +40,85 @@ def cvm_informes (year: int, mth: int) -> pd.DataFrame:
     pd.DataFrame: Pandas dataframe with the report for the given month and year. If the year is previous to 2021, will contain data regarding the whole year
 
    """
-
-    if int(year) >= 2021: #uses download process from reports after the year of 2021
+    try:
+        csv_path=f"C:/Users/asbra/Documents/Financas/BD/Cotacoes/inf_diario_fi_{year}{mth:02d}.csv"
+        print(f'Looking for csv in {csv_path}')
+        cotas = pd.read_csv(csv_path, sep =';')
+        cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
         try:
-            mth = f"{mth:02d}"
-            year = str(year)
-            #creates url using the parameters provided to the function
-            url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_'+year+mth+'.csv'
-            
-            #reads the csv returned by the link
-            cotas = pd.read_csv(url, sep =';')
-            cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
-            
-            try:
-                #removes column present in only a few reports to avoid inconsistency when making the union of reports
-                cotas.drop(columns = ['TP_FUNDO'], inplace = True)
-            except KeyError:
-                pass
-            
-            return cotas
-        except HTTPError:
-            try:
-                csv_path=f"C:/Users/asbra/Downloads/inf_diario_fi_{year}{mth}.csv"
-                print(f'Looking for csv in {csv_path}')
-                cotas = pd.read_csv(csv_path, sep =';')
-                cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
-                try:
-                    #removes column present in only a few reports to avoid inconsistency when making the union of reports
-                    cotas.drop(columns = ['TP_FUNDO'], inplace = True)
-                except KeyError:
-                    pass
-                return cotas
-            except:
-                print(f'{year}-{mth}: theres no report for this date yet!.\n')
-    
-    if int(year) < 2021:
-        try:
-            year = str(year)
-
-            url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/inf_diario_fi_' + year + '.zip'
-            #sends request to the url
-            r = requests.get(url, stream=True, allow_redirects=True)
-            
-            with open('informe' + year + '.zip', 'wb') as fd: #writes the .zip file downloaded
-                fd.write(r.content)
-
-            zip_inf = zipfile.ZipFile('informe' + year + '.zip') #opens the .zip file
-            
-            #le os arquivos csv dentro do arquivo zip
-            informes = [pd.read_csv(zip_inf.open(f), sep=";") for f in zip_inf.namelist()] 
-            cotas = pd.concat(informes,ignore_index=True)
-            
-            cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
-
-            try:
-                #removes column present in only a few reports to avoid inconsistency when making the union of reports
-                cotas.drop(columns = ['TP_FUNDO'], inplace = True)
-            except KeyError:
-                pass
-            
-            zip_inf.close() #fecha o arquivo zip
-            os.remove('informe' + year + '.zip') #deletes .zip file
-            
-            return cotas
+            #removes column present in only a few reports to avoid inconsistency when making the union of reports
+            cotas.drop(columns = ['TP_FUNDO'], inplace = True)
+        except KeyError:
+            pass
+        return cotas
+    except:
+        print(f'{year}-{mth}: theres no report for this date yet!.\n')
         
-        except Exception as E:
-            print(E)           
+    # if int(year) >= 2021: #uses download process from reports after the year of 2021
+    #     try:
+    #         mth = f"{mth:02d}"
+    #         year = str(year)
+    #         #creates url using the parameters provided to the function
+    #         url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/inf_diario_fi_'+year+mth+'.csv'
+            
+    #         #reads the csv returned by the link
+    #         cotas = pd.read_csv(url, sep =';')
+    #         cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
+            
+    #         try:
+    #             #removes column present in only a few reports to avoid inconsistency when making the union of reports
+    #             cotas.drop(columns = ['TP_FUNDO'], inplace = True)
+    #         except KeyError:
+    #             pass
+            
+    #         return cotas
+    #     except:
+    #         try:
+    #             csv_path=f"C:/Users/asbra/Documents/Financas/BD/Cotacoes/inf_diario_fi_{year}{mth}.csv"
+    #             print(f'Looking for csv in {csv_path}')
+    #             cotas = pd.read_csv(csv_path, sep =';')
+    #             cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
+    #             try:
+    #                 #removes column present in only a few reports to avoid inconsistency when making the union of reports
+    #                 cotas.drop(columns = ['TP_FUNDO'], inplace = True)
+    #             except KeyError:
+    #                 pass
+    #             return cotas
+    #         except:
+    #             print(f'{year}-{mth}: theres no report for this date yet!.\n')
+    
+    # if int(year) < 2021:
+    #     try:
+    #         year = str(year)
+
+    #         url = 'http://dados.cvm.gov.br/dados/FI/DOC/INF_DIARIO/DADOS/HIST/inf_diario_fi_' + year + '.zip'
+    #         #sends request to the url
+    #         r = requests.get(url, stream=True, allow_redirects=True)
+            
+    #         with open('informe' + year + '.zip', 'wb') as fd: #writes the .zip file downloaded
+    #             fd.write(r.content)
+
+    #         zip_inf = zipfile.ZipFile('informe' + year + '.zip') #opens the .zip file
+            
+    #         #le os arquivos csv dentro do arquivo zip
+    #         informes = [pd.read_csv(zip_inf.open(f), sep=";") for f in zip_inf.namelist()] 
+    #         cotas = pd.concat(informes,ignore_index=True)
+            
+    #         cotas['DT_COMPTC'] = pd.to_datetime(cotas['DT_COMPTC']) #casts date column to datetime
+
+    #         try:
+    #             #removes column present in only a few reports to avoid inconsistency when making the union of reports
+    #             cotas.drop(columns = ['TP_FUNDO'], inplace = True)
+    #         except KeyError:
+    #             pass
+            
+    #         zip_inf.close() #fecha o arquivo zip
+    #         os.remove('informe' + year + '.zip') #deletes .zip file
+            
+    #         return cotas
+        
+    #     except Exception as E:
+    #         print(E)           
 
 
 def start_db(db_dir: str = 'investments_database.db', start_year: int = 2005, target_funds: list = []):
@@ -262,6 +275,9 @@ def update_db(db_dir: str = r'investments_database.db'):
     last_quota = Cal.sub_working_days(last_update, 2) #date of the last published cvm repport
     num_months = (today.year - last_quota.year) * 12 + (today.month - last_quota.month) + 1
 
+    print(f'Today      : {today}')
+    print(f'Last update: {last_update} -> last update from the log table')
+    print(f'Last quota : {last_quota}  -> date of the last published cvm repport')
 
     ##STEP 3
     #delete information that will be updated from the database tables
@@ -288,7 +304,7 @@ def update_db(db_dir: str = r'investments_database.db'):
     except DatabaseError:
         target_funds = []
     
-    print('downloading new daily reports from the CVM website...\n')
+    print('reading files with daily reports from CVM...\n')
     # downloads the daily cvm repport for each month between the last update and today
     for m in range(num_months+1): 
         data_alvo = last_quota + relativedelta(months=+m) 
@@ -302,7 +318,9 @@ def update_db(db_dir: str = r'investments_database.db'):
 
     #downloads cadastral information from CVM of the fundos and pushes it to the database
     print('downloading updated cadastral information from cvm...\n')
-    info_cad = pd.read_csv('http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv', sep = ';', encoding='latin1',
+    # cad_fi_csv = 'http://dados.cvm.gov.br/dados/FI/CAD/DADOS/cad_fi.csv'
+    cad_fi_csv = r"C:\Users\asbra\Documents\Financas\BD\Fundos\cad_fi.csv"
+    info_cad = pd.read_csv(cad_fi_csv, sep = ';', encoding='latin1',
                            dtype = {'RENTAB_FUNDO': object,'FUNDO_EXCLUSIVO': object, 'TRIB_LPRAZO': object, 'ENTID_INVEST': object,
                                     'INF_TAXA_PERFM': object, 'INF_TAXA_ADM': object, 'DIRETOR': object, 'CNPJ_CONTROLADOR': object,
                                     'CONTROLADOR': object}
